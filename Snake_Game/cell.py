@@ -7,3 +7,5 @@ class Cell:
         self.x = i * w
         self.y = j * w
         self.w = w
+        self.is_snake_body = False
+        self.is_snake_head = False

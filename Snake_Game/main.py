@@ -1,5 +1,6 @@
 # Example file showing a circle moving on screen
 import pygame
+import random
 
 from cell import Cell
 
@@ -21,6 +22,11 @@ for i in range(cols):
     for j in range(rows):
         grid[i][j] = Cell(i, j, w)
 
+snake_x_start = random.randint(0, 9)
+snake_y_start = random.randint(0, 14)
+
+grid[5][5].is_snake_head = True
+
 
 player_pos = pygame.Vector2(screen.get_width() / 2, screen.get_height() / 2)
 
@@ -37,6 +43,8 @@ while running:
     for i in range(cols):
         for j in range(rows):
             pygame.draw.rect(screen, "gray", (grid[i][j].x, grid[i][j].y, grid[i][j].w, grid[i][j].w), 2)
+            if grid[i][j].is_snake_head == True:
+                pygame.draw.rect(screen, "black", (grid[i][j].x, grid[i][j].y, grid[i][j].w, grid[i][j].w), 2)
 
     keys = pygame.key.get_pressed()
     if keys[pygame.K_w]:
