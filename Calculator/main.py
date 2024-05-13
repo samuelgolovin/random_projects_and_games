@@ -1,6 +1,7 @@
 # Example file showing a circle moving on screen
 import pygame
 from button import Button
+from display import Display
 
 # pygame setup
 pygame.init()
@@ -9,9 +10,10 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 clock = pygame.time.Clock()
 running = True
 
+display = Display(10, 10, 380, 100, "Calculator", "lightgray", "darkgray")
 buttons = [
     # number buttons
-    Button(110, 500, 80, 80, "0", "lightgray"),
+    Button(10, 500, 80, 80, "0", "lightgray"),
     Button(10, 400, 80, 80, "1", "lightgray"),
     Button(110, 400, 80, 80, "2", "lightgray"),
     Button(210, 400, 80, 80, "3", "lightgray"),
@@ -29,6 +31,8 @@ buttons = [
     # operation buttons on the top
     Button(210, 120, 180, 60, "<---", "lightgray"),
     Button(10, 120, 180, 60, "C", "lightgray"),
+    # Enter button
+    Button(110, 500, 180, 80, "=", "lightgray")
 ]
 
 while running:
@@ -42,9 +46,21 @@ while running:
             mouse_x, mouse_y = pygame.mouse.get_pos()
             for button in buttons:
                 if button.mouse_on_button(mouse_x, mouse_y):
-                    print(button.text)
+                    if button.text == "<---":
+                        display.remove_from_stack()
+                        print(display.stack)
+                    elif button.text == "C":
+                        display.remove_all_from_stack()
+                        print(display.stack)
+                    else:
+                        print(button.text)
+                        display.insert_into_stack(button.text)
+                        display.text = button.text
+                        print(display.stack)
 
     screen.fill("white")
+
+    display.draw(screen)
 
     for button in buttons:
         button.draw(screen)
