@@ -7,6 +7,7 @@ import colorsys
 pygame.init()
 WIDTH, HEIGHT = 400, 600
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
+pygame.display.set_caption("Sand Simulator")
 clock = pygame.time.Clock()
 running = True
 
@@ -53,7 +54,7 @@ def update_grid(grid, rows, cols):
                     else:
                         nextGrid[i][j] = grid[i][j]
                 else:
-                    nextGrid[i][j] = grid[i][j]  # Sand stays at bottom row
+                    nextGrid[i][j] = grid[i][j]  # Sand stays at bottom row 
     return nextGrid
 
 w = 10 # make smaller to make the sand finer, but not too small as it runs slower
