@@ -4,7 +4,7 @@ import random
 
 # pygame setup
 pygame.init()
-WIDTH, HEIGHT = 600, 800
+WIDTH, HEIGHT = 600, 600
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Minesweeper")
 clock = pygame.time.Clock()
@@ -28,7 +28,7 @@ def setup_game():
         for j in range(rows):
             grid[i][j] = Cell(i, j, w)
 
-    num_mines = 10
+    num_mines = 40
 
     mine_positions = random.sample(range(cols * rows), num_mines)
 
