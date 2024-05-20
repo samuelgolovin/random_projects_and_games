@@ -33,3 +33,7 @@ class Display:
         
     def remove_all_from_stack(self):
         self.stack = []
+
+    def combine_stack(self):
+        all_nums_text = ["".join(self.stack)]
+        return (all_nums_text.pop())

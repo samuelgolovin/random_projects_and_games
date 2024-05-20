@@ -2,6 +2,7 @@
 import pygame
 from button import Button
 from display import Display
+import calculations
 
 # pygame setup
 pygame.init()
@@ -48,6 +49,7 @@ while running:
                 if button.mouse_on_button(mouse_x, mouse_y):
                     if button.text == "<---":
                         display.remove_from_stack()
+                        display.text = display.combine_stack()
                         print(display.stack)
                     elif button.text == "C":
                         display.remove_all_from_stack()
@@ -55,7 +57,7 @@ while running:
                     else:
                         print(button.text)
                         display.insert_into_stack(button.text)
-                        display.text = button.text
+                        display.text = display.combine_stack()
                         print(display.stack)
 
     screen.fill("white")
