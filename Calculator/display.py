@@ -1,4 +1,5 @@
 import pygame
+import calculations
 
 pygame.font.init()
 
@@ -15,6 +16,13 @@ class Display:
         self.text_surface = font.render(self.text, True, "black")
         self.text_rect = self.text_surface.get_rect(topright = (self.rect.x + self.width, self.rect.y))
         self.stack = []
+        self.num1 = 0
+        self.num2 = 0
+        self.num1_entered = False
+        self.num2_entered = False
+        self.calc_type = ""
+        self.answered = False
+        self.answer = 0
 
     def draw(self, surface):
         pygame.draw.rect(surface, self.color, self.rect)
@@ -37,3 +45,15 @@ class Display:
     def combine_stack(self):
         all_nums_text = ["".join(self.stack)]
         return (all_nums_text.pop())
+    
+    def calc(self, calc_type):
+        num1 = int(self.num1)
+        num2 = int(self.num2)
+        if calc_type == "*":
+            return calculations.multiplication(num1, num2)
+        if calc_type == "/":
+            return calculations.division(num1, num2)
+        if calc_type == "-":
+            return calculations.subtraction(num1, num2)
+        if calc_type == "+":
+            return calculations.addition(num1, num2)

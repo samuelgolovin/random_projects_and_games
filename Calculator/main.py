@@ -2,7 +2,6 @@
 import pygame
 from button import Button
 from display import Display
-import calculations
 
 # pygame setup
 pygame.init()
@@ -50,15 +49,55 @@ while running:
                     if button.text == "<---":
                         display.remove_from_stack()
                         display.text = display.combine_stack()
+                        if len(display.stack) <= 0 and display.num1_entered:
+                            display.num1_entered = False
+                        if len(display.stack) <= 0 and display.num2_entered:
+                            display.num2_entered = False
                         print(display.stack)
                     elif button.text == "C":
+                        display.text = display.remove_all_from_stack()
+                        display.num1_entered = False
+                        display.num2_entered = False
+                        print(display.stack)
+                    elif button.text == "*" or button.text == "/" or button.text == "-" or button.text == "+":
+                        display.num1 = display.combine_stack()
                         display.remove_all_from_stack()
                         print(display.stack)
+                        if button.text == "*":
+                            display.calc_type = "*"
+                        if button.text == "/":
+                            display.calc_type = "/"
+                        if button.text == "-":
+                            display.calc_type = "-"
+                        if button.text == "+":
+                            display.calc_type = "+"
+                        print(display.calc_type)
+
+                    elif button.text == "=":
+                        if display.num1_entered and display.num2_entered:
+                            display.num2 = display.combine_stack()
+                            display.answer = str(display.calc(display.calc_type))
+                            display.answered = True
                     else:
-                        print(button.text)
-                        display.insert_into_stack(button.text)
-                        display.text = display.combine_stack()
-                        print(display.stack)
+                        if not display.num1_entered:
+                            display.insert_into_stack(button.text)
+                            display.text = display.combine_stack()
+                            display.num1_entered = True
+                            print(display.stack)
+                        else:
+                            display.insert_into_stack(button.text)
+                            display.text = display.combine_stack()
+                            display.num2_entered = True
+                            print(display.stack)
+    
+    if not display.num1_entered:
+        display.text = "Enter the first number"
+    if display.num1_entered and not display.num2_entered and not display.calc_type == "":
+        display.text = "Enter the second number"
+    if display.num1_entered and display.num2_entered and display.answered:
+        display.text = "Answer: " + display.answer
+        display.answered = False
+
 
     screen.fill("white")
 
