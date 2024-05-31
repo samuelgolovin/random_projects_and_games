@@ -4,6 +4,7 @@ import sys
 import random
 from enemies import Enemies
 from player import Player
+from healthbar import HealthBar
 
 # Initialize Pygame
 pygame.init()
@@ -13,7 +14,10 @@ WIDTH, HEIGHT = 800, 600
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 
 # Set up player
-player = Player(WIDTH // 2, HEIGHT // 2)
+player = Player(WIDTH, HEIGHT)
+
+# Set up health bar
+health_bar = HealthBar(10, 10, 200, 20, 100)  # Adjust the position, size, and max health as needed
 
 enemies = Enemies(WIDTH, HEIGHT)
 
@@ -30,6 +34,8 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            health_bar.current_health = 100
 
     # Game logic (update game state here)
     mouse_pos = pygame.Vector2(pygame.mouse.get_pos())  # The mouse's position
@@ -44,12 +50,23 @@ while running:
     # Update enemies
     enemies.update_enemies(dt)
 
+    # Update healthbar
+    health_bar.update()
+
+    # Collision
+    for enemy in enemies.enemies:
+        if enemy.rect.colliderect(player.rect) and not health_bar.is_invincible():
+            health_bar.take_damage(enemy.damage)
+
     # Drawing/rendering
     screen.fill((0, 0, 0))  # Fill the screen with black
-    player.draw(screen)  # Draw the player's circle
 
     # Draw enemies
     enemies.draw_enemies(screen)
+
+    player.draw(screen, health_bar.is_invincible(), health_bar.timer_for_invincibility)  # Draw the player's circle
+
+    health_bar.draw(screen)  # Draw the health bar
 
     pygame.display.flip()  # Update the display
 
