@@ -41,6 +41,12 @@ while running:
     mouse_pos = pygame.Vector2(pygame.mouse.get_pos())  # The mouse's position
     player.update(dt, mouse_pos)
 
+    if player.cooldown > player.cooldown_limit:
+        for enemy in enemies.enemies:
+            player.fire_bullet(player.pos, enemy.pos, player.projectile_speed)
+
+    player.update_bullets(dt)
+
     # Spawn enemies
     if random.random() < 0.01:  # 1% chance per frame
         enemies.spawn_enemy('small', player.pos)
@@ -65,6 +71,8 @@ while running:
     enemies.draw_enemies(screen)
 
     player.draw(screen, health_bar.is_invincible(), health_bar.timer_for_invincibility)  # Draw the player's circle
+
+    player.draw_bullets(screen)
 
     health_bar.draw(screen)  # Draw the health bar
 

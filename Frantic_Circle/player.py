@@ -2,8 +2,13 @@
 import pygame
 
 class Bullet:
-    def __init__(self, x, y, radius=3, color=(255, 255, 255), speed=500):
-        self.rect = pygame.rect()
+    def __init__(self, x, y, velocity, radius=3, color=(255, 255, 255)):
+        self.pos = pygame.Vector2(x, y)
+        self.size = radius
+        self.velocity = velocity
+        self.color = color
+
+        self.rect = pygame.Rect(self.pos.x, self.pos.y, self.size / 2, self.size / 2)
 
 class Player:
     def __init__(self, screen_width, screen_height, radius=20, color=(255, 255, 255), speed=300):
@@ -19,14 +24,24 @@ class Player:
         self.rect = pygame.Rect(self.pos.x - self.hitbox_size / 2, self.pos.y - self.hitbox_size / 2, self.hitbox_size, self.hitbox_size)
 
         self.cooldown = 0
-        self.cooldown_limit = 10
+        self.cooldown_limit = 30
+        self.projectile_speed = 500
 
         self.bullets = []
 
 
-    def fire_bullet(self):
-        bullet = Bullet(self.pos.x, self.pos.y)
+    def fire_bullet(self, player_pos, enemy_pos, speed):
+        self.cooldown = 0
+        target = pygame.Vector2(enemy_pos)
+        direction = target - pygame.Vector2(player_pos.x, player_pos.y)
+
+        # Normalize the direction vector and multiply by the enemy's speed to get the velocity
+        velocity = direction.normalize() * speed
+
+        bullet = Bullet(self.pos.x, self.pos.y, velocity)
         self.bullets.append(bullet)
+
+        
 
     def update_bullets(self, dt):
         for bullet in self.bullets:
@@ -36,13 +51,15 @@ class Player:
             bullet.pos += bullet.velocity * dt
 
             # If the bullet has left the screen, remove it
-            if bullet.pos.x > self.width + 20 or bullet.pos.x < -20 or bullet.pos.y > self.height + 20 or bullet.pos.y < -20:
+            if bullet.pos.x > self.screen_width + 20 or bullet.pos.x < -20 or bullet.pos.y > self.screen_height + 20 or bullet.pos.y < -20:
                 self.bullets.remove(bullet)
+
+    def draw_bullets(self, screen):
+        for bullet in self.bullets:
+            pygame.draw.circle(screen, self.color, (int(bullet.pos.x), int(bullet.pos.y)), bullet.size)  # Draw the player's circle
 
     def update(self, dt, mouse_pos):
         self.cooldown += 1
-        if self.cooldown > self.cooldown_limit:
-            self.fire_bullet()
         self.rect = pygame.Rect(self.pos.x - self.hitbox_size / 2, self.pos.y - self.hitbox_size / 2, self.hitbox_size, self.hitbox_size)
         direction = (mouse_pos - self.pos).normalize()
         threshold_distance = 3  # You can adjust this value as needed
