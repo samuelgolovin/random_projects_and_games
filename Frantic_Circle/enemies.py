@@ -18,6 +18,7 @@ class Enemy:
 class Enemies:
     def __init__(self, width, height):
         self.enemies = []
+        self.bosses = []
 
         # these are width and height of the screen
         self.width = width
@@ -39,7 +40,19 @@ class Enemies:
             x = self.width + 10  # 10 units to the right of the screen
             y = random.uniform(0, self.height)
 
-        speed = random.uniform(50, 100) if type == 'small' else random.uniform(20, 50)
+        if type == 'small':
+            speed = random.uniform(50, 100)
+            size = 20
+            health = 20
+        elif type == 'big':
+            speed = random.uniform(20, 50)
+            size = 30
+            health = 50
+        else:
+            speed = random.uniform(10, 20)
+            size = 100
+            health = 500
+
 
         # Calculate the direction vector to the target
         target = pygame.Vector2(player_pos)
@@ -48,9 +61,7 @@ class Enemies:
         # Normalize the direction vector and multiply by the enemy's speed to get the velocity
         velocity = direction.normalize() * speed
 
-        size = 20 if type == 'small' else 30
-
-        enemy = Enemy(type, (x, y), size, velocity)
+        enemy = Enemy(type, (x, y), size, velocity, health)
         self.enemies.append(enemy)
 
     def update_enemies(self, dt):
@@ -68,12 +79,25 @@ class Enemies:
                 self.kill_enemy(enemy)
 
             enemy.healthbar.update(enemy.pos.x, enemy.pos.y)
+    
+        for boss in self.bosses:
+            boss.healthbar.update(boss.pos.x, boss.pos.y)
+
+            if boss.healthbar.current_health <= 0:
+                self.kill_boss(boss)
 
     def kill_enemy(self, enemy):
         self.enemies.remove(enemy)
+
+    def kill_boss(self, boss):
+        self.bosses.remove(boss)
             
 
     def draw_enemies(self, screen):
         for enemy in self.enemies:
             pygame.draw.rect(screen, (255, 0, 0), enemy.rect)
             enemy.healthbar.draw(screen)
+        
+        for boss in self.bosses:
+            pygame.draw.rect(screen, (255, 0, 0), boss.rect)
+            boss.healthbar.draw(screen)

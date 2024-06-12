@@ -21,6 +21,9 @@ health_bar = HealthBar(10, 10, 200, 20, 100)  # Adjust the position, size, and m
 
 enemies = Enemies(WIDTH, HEIGHT)
 
+boss_cooldown = 1000
+boss_clock = 0
+
 # Set up clock
 clock = pygame.time.Clock()
 FPS = 60  # The desired frame rate in frames per second
@@ -51,6 +54,11 @@ while running:
         enemies.spawn_enemy('small', player.pos)
     if random.random() < 0.005:  # 0.5% chance per frame
         enemies.spawn_enemy('big', player.pos)
+    if boss_clock >= boss_cooldown:
+        boss_clock = 0
+        enemies.spawn_enemy('boss', player.pos)
+    else:
+        boss_clock += 1
 
     # Update enemies
     enemies.update_enemies(dt)
