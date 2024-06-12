@@ -16,7 +16,7 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 # Set up player
 player = Player(WIDTH, HEIGHT)
 
-# Set up health bar
+# Set up player health bar
 health_bar = HealthBar(10, 10, 200, 20, 100)  # Adjust the position, size, and max health as needed
 
 enemies = Enemies(WIDTH, HEIGHT)
@@ -41,9 +41,8 @@ while running:
     mouse_pos = pygame.Vector2(pygame.mouse.get_pos())  # The mouse's position
     player.update(dt, mouse_pos)
 
-    if player.cooldown > player.cooldown_limit:
-        for enemy in enemies.enemies:
-            player.fire_bullet(player.pos, enemy.pos, player.projectile_speed)
+    if player.cooldown > player.cooldown_limit and enemies.enemies:
+        player.fire_bullet(player.pos, player.closest_enemy(enemies.enemies, player.pos), player.projectile_speed)
 
     player.update_bullets(dt)
 
@@ -63,6 +62,10 @@ while running:
     for enemy in enemies.enemies:
         if enemy.rect.colliderect(player.rect) and not health_bar.is_invincible():
             health_bar.take_damage(enemy.damage)
+        for bullet in player.bullets:
+            if enemy.rect.colliderect(bullet):
+                enemy.healthbar.current_health = enemy.healthbar.current_health - player.projectile_damage
+                player.bullets.remove(bullet)
 
     # Drawing/rendering
     screen.fill((0, 0, 0))  # Fill the screen with black

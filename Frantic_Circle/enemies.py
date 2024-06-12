@@ -2,15 +2,18 @@
 import pygame
 import random
 
+from enemy_healthbar import HealthBar
+
 class Enemy:
-    def __init__(self, type, pos, speed, size, velocity, damage=20):
+    def __init__(self, type, pos, size, velocity, health=50, damage=20):
         self.type = type
         self.pos = pygame.Vector2(pos)
-        self.speed = speed
         self.velocity = velocity
         self.damage = damage
         self.size = size
         self.rect = pygame.Rect(self.pos.x, self.pos.y, self.size, self.size)
+
+        self.healthbar = HealthBar(self.pos.x, self.pos.y, self.size, self.size // 4, health)
 
 class Enemies:
     def __init__(self, width, height):
@@ -36,7 +39,7 @@ class Enemies:
             x = self.width + 10  # 10 units to the right of the screen
             y = random.uniform(0, self.height)
 
-        speed = random.uniform(50, 150) if type == 'small' else random.uniform(20, 80)
+        speed = random.uniform(50, 100) if type == 'small' else random.uniform(20, 50)
 
         # Calculate the direction vector to the target
         target = pygame.Vector2(player_pos)
@@ -45,9 +48,9 @@ class Enemies:
         # Normalize the direction vector and multiply by the enemy's speed to get the velocity
         velocity = direction.normalize() * speed
 
-        size = 10 if type == 'small' else 20
+        size = 20 if type == 'small' else 30
 
-        enemy = Enemy(type, (x, y), speed, size, velocity)
+        enemy = Enemy(type, (x, y), size, velocity)
         self.enemies.append(enemy)
 
     def update_enemies(self, dt):
@@ -60,8 +63,17 @@ class Enemies:
             # If the enemy has left the screen, remove it
             if enemy.pos.x > self.width + 20 or enemy.pos.x < -20 or enemy.pos.y > self.height + 20 or enemy.pos.y < -20:
                 self.enemies.remove(enemy)
+
+            if enemy.healthbar.current_health <= 0:
+                self.kill_enemy(enemy)
+
+            enemy.healthbar.update(enemy.pos.x, enemy.pos.y)
+
+    def kill_enemy(self, enemy):
+        self.enemies.remove(enemy)
             
 
     def draw_enemies(self, screen):
         for enemy in self.enemies:
-            pygame.draw.rect(screen, (255, 0, 0), pygame.Rect(int(enemy.pos.x), int(enemy.pos.y), enemy.size, enemy.size))
+            pygame.draw.rect(screen, (255, 0, 0), enemy.rect)
+            enemy.healthbar.draw(screen)

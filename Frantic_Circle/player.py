@@ -24,8 +24,10 @@ class Player:
         self.rect = pygame.Rect(self.pos.x - self.hitbox_size / 2, self.pos.y - self.hitbox_size / 2, self.hitbox_size, self.hitbox_size)
 
         self.cooldown = 0
-        self.cooldown_limit = 30
+        self.cooldown_limit = 10
         self.projectile_speed = 500
+
+        self.projectile_damage = 5
 
         self.bullets = []
 
@@ -41,7 +43,24 @@ class Player:
         bullet = Bullet(self.pos.x, self.pos.y, velocity)
         self.bullets.append(bullet)
 
-        
+    def closest_enemy(self, enemies, player_pos):
+        if len(enemies) > 1:
+            
+            temp_array = []
+            for enemy in enemies:
+                temp_array.append(pygame.Vector2(enemy.rect.center))
+
+            min_val = temp_array[0], 0
+
+            for i in range(1, len(temp_array) - 1):
+                if min_val[0].distance_to(player_pos) > temp_array[i].distance_to(player_pos):
+                    min_val = temp_array[i], i
+
+            return temp_array[min_val[1]]
+        else:
+            for enemy in enemies:
+                return enemy.rect.center
+
 
     def update_bullets(self, dt):
         for bullet in self.bullets:
