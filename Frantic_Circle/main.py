@@ -5,6 +5,7 @@ import random
 from enemies import Enemies
 from player import Player
 from healthbar import HealthBar
+from shop import Shop
 
 # Initialize Pygame
 pygame.init()
@@ -12,6 +13,8 @@ pygame.init()
 # Set up display variables
 WIDTH, HEIGHT = 800, 600
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
+
+scene = 'game'
 
 # Set up player
 player = Player(WIDTH, HEIGHT)
@@ -23,6 +26,8 @@ enemies = Enemies(WIDTH, HEIGHT)
 
 boss_cooldown = 1000
 boss_clock = 0
+
+shop = Shop()
 
 # Set up clock
 clock = pygame.time.Clock()
@@ -37,55 +42,66 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            health_bar.current_health = 100
+        if event.type == pygame.KEYUP:
+            if scene == 'game':
+                scene = 'shop'
+            elif scene == 'shop':
+                scene = 'game'
 
     # Game logic (update game state here)
     mouse_pos = pygame.Vector2(pygame.mouse.get_pos())  # The mouse's position
-    player.update(dt, mouse_pos)
 
-    if player.cooldown > player.cooldown_limit and enemies.enemies:
-        player.fire_bullet(player.pos, player.closest_enemy(enemies.enemies, player.pos), player.projectile_speed)
+    if scene == 'game':
 
-    player.update_bullets(dt)
+        player.update(dt, mouse_pos)
 
-    # Spawn enemies
-    if random.random() < 0.01:  # 1% chance per frame
-        enemies.spawn_enemy('small', player.pos)
-    if random.random() < 0.005:  # 0.5% chance per frame
-        enemies.spawn_enemy('big', player.pos)
-    if boss_clock >= boss_cooldown:
-        boss_clock = 0
-        enemies.spawn_enemy('boss', player.pos)
-    else:
-        boss_clock += 1
+        if player.cooldown > player.cooldown_limit and enemies.enemies:
+            player.fire_bullet(player.pos, player.closest_enemy(enemies.enemies, player.pos), player.projectile_speed)
 
-    # Update enemies
-    enemies.update_enemies(dt)
+        player.update_bullets(dt)
 
-    # Update healthbar
-    health_bar.update()
+        # Spawn enemies
+        if random.random() < 0.01:  # 1% chance per frame
+            enemies.spawn_enemy('small', player.pos)
+        if random.random() < 0.005:  # 0.5% chance per frame
+            enemies.spawn_enemy('big', player.pos)
+        if boss_clock >= boss_cooldown:
+            boss_clock = 0
+            enemies.spawn_enemy('boss', player.pos)
+        else:
+            boss_clock += 1
 
-    # Collision
-    for enemy in enemies.enemies:
-        if enemy.rect.colliderect(player.rect) and not health_bar.is_invincible():
-            health_bar.take_damage(enemy.damage)
-        for bullet in player.bullets:
-            if enemy.rect.colliderect(bullet):
-                enemy.healthbar.current_health = enemy.healthbar.current_health - player.projectile_damage
-                player.bullets.remove(bullet)
+        # Update enemies
+        enemies.update_enemies(dt)
 
-    # Drawing/rendering
-    screen.fill((0, 0, 0))  # Fill the screen with black
+        # Update healthbar
+        health_bar.update()
 
-    # Draw enemies
-    enemies.draw_enemies(screen)
+        # Collision
+        for enemy in enemies.enemies:
+            if enemy.rect.colliderect(player.rect) and not health_bar.is_invincible():
+                health_bar.take_damage(enemy.damage)
+            for bullet in player.bullets:
+                if enemy.rect.colliderect(bullet):
+                    enemy.healthbar.current_health = enemy.healthbar.current_health - player.projectile_damage
+                    player.bullets.remove(bullet)
 
-    player.draw(screen, health_bar.is_invincible(), health_bar.timer_for_invincibility)  # Draw the player's circle
+        # Drawing/rendering
+        screen.fill((0, 0, 0))  # Fill the screen with black
 
-    player.draw_bullets(screen)
+        # Draw enemies
+        enemies.draw_enemies(screen)
 
-    health_bar.draw(screen)  # Draw the health bar
+        player.draw(screen, health_bar.is_invincible(), health_bar.timer_for_invincibility)  # Draw the player's circle
+
+        player.draw_bullets(screen)
+
+        health_bar.draw(screen)  # Draw the health bar
+
+    elif scene == 'shop':
+        screen.fill((0, 0, 0))
+
+        shop.draw_buttons(screen)
 
     pygame.display.flip()  # Update the display
 
