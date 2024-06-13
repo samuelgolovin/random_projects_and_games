@@ -9,10 +9,14 @@ from shop import Shop
 
 # Initialize Pygame
 pygame.init()
+pygame.font.init()
+font = pygame.font.Font(None, 36)
 
 # Set up display variables
 WIDTH, HEIGHT = 800, 600
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
+
+money = 0
 
 scene = 'game'
 
@@ -38,6 +42,8 @@ running = True
 while running:
     dt = clock.tick(FPS) / 1000  # Amount of seconds between each loop
 
+    mouse_pos = pygame.Vector2(pygame.mouse.get_pos())  # The mouse's position
+
     # Event handling
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -47,9 +53,18 @@ while running:
                 scene = 'shop'
             elif scene == 'shop':
                 scene = 'game'
+        for button in shop.buttons:
+            if button.mouse_over(mouse_pos):
+                if event.type == pygame.MOUSEBUTTONUP:
+                    if button.text == 'Attack Damage' and money >= button.cost:
+                        player.projectile_damage = player.projectile_damage + 1
+                        money -= button.cost
+                        button.cost += button.cost
+                        
+
 
     # Game logic (update game state here)
-    mouse_pos = pygame.Vector2(pygame.mouse.get_pos())  # The mouse's position
+    
 
     if scene == 'game':
 
@@ -81,6 +96,15 @@ while running:
         for enemy in enemies.enemies:
             if enemy.rect.colliderect(player.rect) and not health_bar.is_invincible():
                 health_bar.take_damage(enemy.damage)
+            if enemy.healthbar.current_health <= 0:
+                if enemy.type == 'small':
+                    money = money + 1
+                elif enemy.type == 'big':
+                    money = money + 5
+                else:
+                    money = money + 100
+                enemies.kill_enemy(enemy)
+
             for bullet in player.bullets:
                 if enemy.rect.colliderect(bullet):
                     enemy.healthbar.current_health = enemy.healthbar.current_health - player.projectile_damage
@@ -99,9 +123,25 @@ while running:
         health_bar.draw(screen)  # Draw the health bar
 
     elif scene == 'shop':
-        screen.fill((0, 0, 0))
+        screen.fill((50, 50, 50))
+
+        
+
+        text_surface = font.render('Current Stats: ' + str(player.projectile_damage), True, (0, 0, 0))
+        text_rect = text_surface.get_rect()
+        text_rect.center = (100, 100)
+
+        screen.blit(text_surface, text_rect)
+
+        text_surface = font.render('Money: ' + str(money), True, (0, 0, 0))
+        text_rect = text_surface.get_rect()
+        text_rect.center = (100, 125)
+
+        screen.blit(text_surface, text_rect)
 
         shop.draw_buttons(screen)
+
+
 
     pygame.display.flip()  # Update the display
 

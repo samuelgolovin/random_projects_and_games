@@ -18,7 +18,6 @@ class Enemy:
 class Enemies:
     def __init__(self, width, height):
         self.enemies = []
-        self.bosses = []
 
         # these are width and height of the screen
         self.width = width
@@ -75,29 +74,13 @@ class Enemies:
             if enemy.pos.x > self.width + 20 or enemy.pos.x < -20 or enemy.pos.y > self.height + 20 or enemy.pos.y < -20:
                 self.enemies.remove(enemy)
 
-            if enemy.healthbar.current_health <= 0:
-                self.kill_enemy(enemy)
-
             enemy.healthbar.update(enemy.pos.x, enemy.pos.y)
-    
-        for boss in self.bosses:
-            boss.healthbar.update(boss.pos.x, boss.pos.y)
-
-            if boss.healthbar.current_health <= 0:
-                self.kill_boss(boss)
 
     def kill_enemy(self, enemy):
         self.enemies.remove(enemy)
-
-    def kill_boss(self, boss):
-        self.bosses.remove(boss)
             
 
     def draw_enemies(self, screen):
         for enemy in self.enemies:
             pygame.draw.rect(screen, (255, 0, 0), enemy.rect)
             enemy.healthbar.draw(screen)
-        
-        for boss in self.bosses:
-            pygame.draw.rect(screen, (255, 0, 0), boss.rect)
-            boss.healthbar.draw(screen)
