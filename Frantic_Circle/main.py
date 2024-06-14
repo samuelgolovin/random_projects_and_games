@@ -127,10 +127,11 @@ while running:
                     player.bullets.remove(bullet)
 
 
+
         # Drawing/rendering
         screen.fill((0, 0, 0))  # Fill the screen with black
 
-        particles.update_and_draw_particles(screen)
+        particles.update_and_draw_particles(screen, player.pos)
 
         # Draw enemies
         enemies.draw_enemies(screen)
