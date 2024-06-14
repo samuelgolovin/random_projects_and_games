@@ -30,10 +30,10 @@ class Shop:
     def __init__(self):
         self.buttons = []
 
-        self.buttons.append(Button(275, 300, 100, 50, 'Attack Damage', (230, 150, 173), 10))
-        self.buttons.append(Button(275, 400, 100, 50, 'Speed', (230, 150, 173), 25))
-        self.buttons.append(Button(425, 300, 100, 50, 'Heal', (230, 150, 173), 50))
-        self.buttons.append(Button(425, 400, 100, 50, 'money mult', (230, 150, 173), 1000))
+        self.buttons.append(Button(275, 300, 100, 50, 'Attack Damage', (230, 150, 173), 2))
+        self.buttons.append(Button(275, 400, 100, 50, 'Speed', (230, 150, 173), 5))
+        self.buttons.append(Button(425, 300, 100, 50, 'Heal', (230, 150, 173), 10))
+        self.buttons.append(Button(425, 400, 100, 50, 'money mult', (230, 150, 173), 100))
 
     def draw_buttons(self, screen):
         for button in self.buttons:
