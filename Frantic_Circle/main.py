@@ -6,6 +6,7 @@ from enemies import Enemies
 from player import Player
 from healthbar import HealthBar
 from shop import Shop
+from particle import Particles
 
 # Initialize Pygame
 pygame.init()
@@ -17,6 +18,7 @@ WIDTH, HEIGHT = 800, 600
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 
 money = 0
+moneyMult = 1
 
 scene = 'game'
 
@@ -32,6 +34,8 @@ boss_cooldown = 1000
 boss_clock = 0
 
 shop = Shop()
+
+particles = Particles()
 
 # Set up clock
 clock = pygame.time.Clock()
@@ -57,9 +61,21 @@ while running:
             if button.mouse_over(mouse_pos):
                 if event.type == pygame.MOUSEBUTTONUP:
                     if button.text == 'Attack Damage' and money >= button.cost:
-                        player.projectile_damage = player.projectile_damage + 1
+                        player.projectile_damage += 1
                         money -= button.cost
+                        button.cost += button.cost // 4
+                    if button.text == 'Speed' and money >= button.cost:
+                        player.speed += 10
+                        money -= button.cost // 3
                         button.cost += button.cost
+                    if button.text == 'Heal' and money >= button.cost and health_bar.current_health < health_bar.max_health:
+                        health_bar.current_health += 10
+                        money -= button.cost
+                        button.cost += button.cost // 10
+                    if button.text == 'money mult' and money >= button.cost:
+                        moneyMult += 1
+                        money -= button.cost
+                        button.cost += button.cost // 2
                         
 
 
@@ -98,11 +114,11 @@ while running:
                 health_bar.take_damage(enemy.damage)
             if enemy.healthbar.current_health <= 0:
                 if enemy.type == 'small':
-                    money = money + 1
+                    particles.createParticle(3, enemy.pos, 3, 10, 20, (50, 240, 30, 0.8))
                 elif enemy.type == 'big':
-                    money = money + 5
+                    particles.createParticle(3, enemy.pos, 3, 10, 20, (50, 240, 30, 0.8))
                 else:
-                    money = money + 100
+                    particles.createParticle(3, enemy.pos, 3, 10, 20, (50, 240, 30, 0.8))
                 enemies.kill_enemy(enemy)
 
             for bullet in player.bullets:
@@ -110,8 +126,11 @@ while running:
                     enemy.healthbar.current_health = enemy.healthbar.current_health - player.projectile_damage
                     player.bullets.remove(bullet)
 
+
         # Drawing/rendering
         screen.fill((0, 0, 0))  # Fill the screen with black
+
+        particles.update_and_draw_particles(screen)
 
         # Draw enemies
         enemies.draw_enemies(screen)
@@ -122,18 +141,26 @@ while running:
 
         health_bar.draw(screen)  # Draw the health bar
 
+        text_surface = font.render('Money: ' + str(money), True, (255, 255, 255))
+        text_rect = text_surface.get_rect()
+        text_rect.center = (400, 100)
+
+        screen.blit(text_surface, text_rect)
+
+
+
     elif scene == 'shop':
         screen.fill((50, 50, 50))
 
         
 
-        text_surface = font.render('Current Stats: ' + str(player.projectile_damage), True, (0, 0, 0))
+        text_surface = font.render('Current Stats: ' + str(player.projectile_damage), True, (255, 255, 255))
         text_rect = text_surface.get_rect()
         text_rect.center = (100, 100)
 
         screen.blit(text_surface, text_rect)
 
-        text_surface = font.render('Money: ' + str(money), True, (0, 0, 0))
+        text_surface = font.render('Money: ' + str(money), True, (255, 255, 255))
         text_rect = text_surface.get_rect()
         text_rect.center = (100, 125)
 

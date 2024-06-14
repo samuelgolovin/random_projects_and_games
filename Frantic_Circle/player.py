@@ -11,7 +11,7 @@ class Bullet:
         self.rect = pygame.Rect(self.pos.x, self.pos.y, self.size / 2, self.size / 2)
 
 class Player:
-    def __init__(self, screen_width, screen_height, radius=20, color=(255, 255, 255), speed=300):
+    def __init__(self, screen_width, screen_height, radius=20, color=(255, 255, 255), speed=200):
         self.screen_width = screen_width
         self.screen_height = screen_height
 
