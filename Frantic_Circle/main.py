@@ -116,15 +116,20 @@ while running:
                 if enemy.type == 'small':
                     particles.createParticle(3, enemy.pos, 3, 10, 20, (50, 240, 30, 0.8))
                 elif enemy.type == 'big':
-                    particles.createParticle(3, enemy.pos, 3, 10, 20, (50, 240, 30, 0.8))
+                    particles.createParticle(5, enemy.pos, 3, 10, 20, (50, 240, 30, 0.8))
                 else:
-                    particles.createParticle(3, enemy.pos, 3, 10, 20, (50, 240, 30, 0.8))
+                    particles.createParticle(10, enemy.pos, 3, 10, 20, (50, 240, 30, 0.8))
                 enemies.kill_enemy(enemy)
 
             for bullet in player.bullets:
                 if enemy.rect.colliderect(bullet):
                     enemy.healthbar.current_health = enemy.healthbar.current_health - player.projectile_damage
                     player.bullets.remove(bullet)
+
+        for particle in particles.particles:
+            if player.rect.colliderect(particle.rect):
+                particles.particles.remove(particle)
+                money += 1
 
 
 

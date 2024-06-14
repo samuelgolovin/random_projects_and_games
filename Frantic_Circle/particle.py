@@ -6,7 +6,8 @@ class Particle:
         self.rect = pygame.Rect(pos.x, pos.y, size, size)
         self.size = size
         self.max_speed = speed
-        self.speed = speed
+        self.speed_after_spawn = speed
+        self.speed_towards_player = 0
         self.rate_of_slowdown = speed / 30
         self.rate_of_speedup = speed / 100
         self.value = value
@@ -17,18 +18,20 @@ class Particle:
         return True if pygame.Vector2(self.rect.center).distance_to(player_pos) <= 100 else False
 
     def update(self, player_pos):
-        self.rect.center += self.direction * self.speed
         if not self.near_player_pos(player_pos):
-            if self.speed > 0:
-                self.speed -= self.rate_of_slowdown
+            if self.speed_after_spawn > 0:
+                self.speed_after_spawn -= self.rate_of_slowdown
             else:
-                self.speed = 0
+                self.speed_after_spawn = 0
+            self.rect.center += self.direction * self.speed_after_spawn
         else:
             self.direction = player_pos - pygame.Vector2(self.rect.centerx, self.rect.centery)
-            if self.speed < self.max_speed:
-                self.speed += self.rate_of_speedup
+            if self.speed_towards_player < self.max_speed:
+                self.speed_towards_player += self.rate_of_speedup
             else:
-                self.speed = self.max_speed
+                self.speed_towards_player = self.max_speed
+
+            self.rect.center += self.direction * self.speed_towards_player
 
     def draw(self, surface):
         pygame.draw.circle(surface, self.color, self.rect.center, self.size // 2)

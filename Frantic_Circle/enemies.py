@@ -46,11 +46,11 @@ class Enemies:
         elif type == 'big':
             speed = random.uniform(20, 50)
             size = 30
-            health = 50
+            health = 40
         else:
             speed = random.uniform(10, 20)
             size = 100
-            health = 500
+            health = 200
 
 
         # Calculate the direction vector to the target
