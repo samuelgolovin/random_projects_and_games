@@ -63,7 +63,7 @@ while running:
                     if button.text == 'Attack Damage' and money >= button.cost:
                         player.projectile_damage += 1
                         money -= button.cost
-                        button.cost += button.cost // 4
+                        button.cost += button.cost // 3 + 1
                     if button.text == 'Speed' and money >= button.cost:
                         player.speed += 10
                         money -= button.cost // 3
@@ -114,11 +114,11 @@ while running:
                 health_bar.take_damage(enemy.damage)
             if enemy.healthbar.current_health <= 0:
                 if enemy.type == 'small':
-                    particles.createParticle(3, enemy.pos, 3, 10, 20, (50, 240, 30, 0.8))
+                    particles.createParticle(3, enemy.pos, 3, 10, 20)
                 elif enemy.type == 'big':
-                    particles.createParticle(5, enemy.pos, 3, 10, 20, (50, 240, 30, 0.8))
+                    particles.createParticle(7, enemy.pos, 5, 10, 20)
                 else:
-                    particles.createParticle(10, enemy.pos, 3, 10, 20, (50, 240, 30, 0.8))
+                    particles.createParticle(100, enemy.pos, 10, 10, 20)
                 enemies.kill_enemy(enemy)
 
             for bullet in player.bullets:

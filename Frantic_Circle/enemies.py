@@ -40,15 +40,15 @@ class Enemies:
             y = random.uniform(0, self.height)
 
         if type == 'small':
-            speed = random.uniform(50, 100)
+            speed = random.uniform(50, 70)
             size = 20
             health = 20
         elif type == 'big':
-            speed = random.uniform(20, 50)
+            speed = random.uniform(15, 30)
             size = 30
             health = 40
         else:
-            speed = random.uniform(10, 20)
+            speed = random.uniform(5, 10)
             size = 100
             health = 200
 
