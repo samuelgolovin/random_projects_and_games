@@ -12,6 +12,7 @@ from particle import Particles
 pygame.init()
 pygame.font.init()
 font = pygame.font.Font(None, 36)
+bigfont = pygame.font.Font(None, 100)
 
 # Set up display variables
 WIDTH, HEIGHT = 800, 600
@@ -19,6 +20,8 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 
 money = 0
 moneyMult = 1
+
+score = 0
 
 scene = 'game'
 
@@ -112,12 +115,17 @@ while running:
         for enemy in enemies.enemies:
             if enemy.rect.colliderect(player.rect) and not health_bar.is_invincible():
                 health_bar.take_damage(enemy.damage)
+            if health_bar.current_health <= 0:
+                scene = 'gameover'
             if enemy.healthbar.current_health <= 0:
                 if enemy.type == 'small':
+                    score += 10
                     particles.createParticle(3, enemy.pos, 3, 10, 20)
                 elif enemy.type == 'big':
+                    score += 50
                     particles.createParticle(7, enemy.pos, 5, 10, 20)
                 else:
+                    score += 100
                     particles.createParticle(100, enemy.pos, 10, 10, 20)
                 enemies.kill_enemy(enemy)
 
@@ -130,6 +138,7 @@ while running:
             if player.rect.colliderect(particle.rect):
                 particles.particles.remove(particle)
                 money += 1
+                score += 1
 
 
 
@@ -149,7 +158,13 @@ while running:
 
         text_surface = font.render('Money: ' + str(money), True, (255, 255, 255))
         text_rect = text_surface.get_rect()
-        text_rect.center = (400, 100)
+        text_rect.center = (400, 25)
+
+        screen.blit(text_surface, text_rect)
+
+        text_surface = font.render('Score: ' + str(score), True, (255, 255, 255))
+        text_rect = text_surface.get_rect()
+        text_rect.center = (400, 75)
 
         screen.blit(text_surface, text_rect)
 
@@ -158,22 +173,38 @@ while running:
     elif scene == 'shop':
         screen.fill((50, 50, 50))
 
-        
-
-        text_surface = font.render('Current Stats: ' + str(player.projectile_damage), True, (255, 255, 255))
+        text_surface = font.render('Attack damage: ' + str(player.projectile_damage), True, (255, 255, 255))
         text_rect = text_surface.get_rect()
-        text_rect.center = (100, 100)
+        text_rect.center = (200, 100)
+
+        screen.blit(text_surface, text_rect)
+
+        text_surface = font.render('Money Multiplier: ' + str(moneyMult), True, (255, 255, 255))
+        text_rect = text_surface.get_rect()
+        text_rect.center = (200, 125)
 
         screen.blit(text_surface, text_rect)
 
         text_surface = font.render('Money: ' + str(money), True, (255, 255, 255))
         text_rect = text_surface.get_rect()
-        text_rect.center = (100, 125)
+        text_rect.center = (400, 25)
 
         screen.blit(text_surface, text_rect)
 
         shop.draw_buttons(screen)
 
+    elif scene == 'gameover':
+        text_surface = bigfont.render('GAME OVER', True, (255, 0, 0), (100, 0, 0))
+        text_rect = text_surface.get_rect()
+        text_rect.center = (WIDTH // 2, HEIGHT // 2 - 100)
+
+        screen.blit(text_surface, text_rect)
+
+        text_surface = bigfont.render('Your final score: ' + str(score), True, (255, 0, 0), (100, 0, 0))
+        text_rect = text_surface.get_rect()
+        text_rect.center = (WIDTH // 2, HEIGHT // 2 + 100)
+
+        screen.blit(text_surface, text_rect)
 
 
     pygame.display.flip()  # Update the display
