@@ -24,11 +24,13 @@ while running:
             running = False
         if event.type == pygame.MOUSEBUTTONDOWN:
             settlements.create_settlement(mouse_posx, mouse_posy, 50, 'white')
+            settlements.create_button(mouse_posx + 200, mouse_posy, 100, 100, 'green')
 
     # fill the screen with a color to wipe away anything from last frame
     screen.fill((30, 30, 60))
 
     settlements.update_settlements(screen)
+    settlements.update_buttons(screen)
 
     # flip() the display to put your work on screen
     pygame.display.flip()
