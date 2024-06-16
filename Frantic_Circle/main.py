@@ -137,7 +137,7 @@ while running:
         for particle in particles.particles:
             if player.rect.colliderect(particle.rect):
                 particles.particles.remove(particle)
-                money += 1
+                money += 1 * moneyMult
                 score += 1
 
 
