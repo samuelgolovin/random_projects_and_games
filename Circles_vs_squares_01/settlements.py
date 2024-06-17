@@ -13,6 +13,12 @@ class Settlement:
             self.bought = True
             self.range = 50
 
+        if self.type == 'basic_relay':
+            self.size = 20
+            self.color = 'gray'
+            self.bought = True
+            self.range = 200
+
         elif self.type == 'city':
             self.size = 50
             self.color = 'white'
@@ -26,7 +32,9 @@ class Settlement:
         if self.type == 'basic_earner':
             pygame.draw.circle(surface, self.color, self.rect.center, self.rect.width / 2)
             pygame.draw.circle(surface, 'black', self.rect.center, self.rect.width / 2, 2)
-
+        elif self.type == 'basic_relay':
+            pygame.draw.circle(surface, self.color, self.rect.center, self.rect.width / 2)
+            pygame.draw.circle(surface, 'black', self.rect.center, self.rect.width / 2, 2)
 
         elif self.type == 'city':
             pygame.draw.circle(surface, self.color, self.rect.center, self.rect.width / 2)

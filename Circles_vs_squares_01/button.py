@@ -9,8 +9,12 @@ class Button:
     def draw(self, surface):
         pygame.draw.rect(surface, self.color, self.rect)
         if self.type == 'basic_earner':
-            pygame.draw.circle(surface, 'white', self.rect.center, self.rect.width / 5)
-            pygame.draw.circle(surface, 'black', self.rect.center, self.rect.width / 5, self.rect.width // 15)
+            pygame.draw.circle(surface, 'white', self.rect.center, self.rect.width / 7)
+            pygame.draw.circle(surface, 'black', self.rect.center, self.rect.width / 7, self.rect.width // 18)
+
+        elif self.type == 'basic_relay':
+            pygame.draw.circle(surface, 'gray', self.rect.center, self.rect.width / 4)
+            pygame.draw.circle(surface, 'black', self.rect.center, self.rect.width / 4, self.rect.width // 20)
 
 
         elif self.type == 'city':
