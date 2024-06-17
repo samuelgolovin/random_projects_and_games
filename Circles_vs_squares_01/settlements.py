@@ -1,33 +1,18 @@
 import pygame
 
-class Button:
-    def __init__(self, x, y, width, height, color, type):
-        self.rect = pygame.Rect(x, y, width, height)
-        self.color = color
-        self.type = type
-    
-    def draw(self, surface):
-        pygame.draw.rect(surface, self.color, self.rect)
-        if self.type == 'basic_earner':
-            pygame.draw.circle(surface, 'white', self.rect.center, self.rect.width / 5)
-            pygame.draw.circle(surface, 'black', self.rect.center, self.rect.width / 5, self.rect.width // 15)
-
-
-        elif self.type == 'city':
-            pygame.draw.circle(surface, 'white', self.rect.center, self.rect.width / 3)
-            pygame.draw.circle(surface, 'black', self.rect.center, self.rect.width / 3, self.rect.width // 10)
-
-    def update(self, surface):
-        self.draw(surface)
+from button import Button
+from connection import Connection
 
 class Settlement:
     def __init__(self, x, y, type):
         self.type = type
+        self.connected = False
         print(self.type)
         if self.type == 'basic_earner':
             self.size = 10
             self.color = 'white'
             self.bought = True
+            self.range = 50
 
         elif self.type == 'city':
             self.size = 50
@@ -53,18 +38,6 @@ class Settlement:
     def update(self, surface):
         self.draw(surface)
 
-class Connection:
-    def __init__(self, start_pos, end_pos, color):
-        self.start_pos = start_pos
-        self.end_pos = end_pos
-        self.color = color
-
-    def draw(self, surface):
-        pygame.draw.line(surface, self.color, self.start_pos, self.end_pos)
-
-    def update(self, surface):
-        self.draw(surface)
-
 class Settlements:
     def __init__(self):
         self.settlements = []
@@ -85,7 +58,7 @@ class Settlements:
         for settlement in self.settlements:
             if settlement.bought == True:
                 settlement.bought = False
-                return
+        return
 
     def create_button(self, x, y, width, height, color, type):
         self.buttons.append(Button(x, y, width, height, color, type))
@@ -95,6 +68,9 @@ class Settlements:
 
     def create_connection(self, start_pos, end_pos, color):
         self.connections.append(Connection(start_pos, end_pos, color))
+
+    def remove_connection(self, connection):
+        self.connections.remove(connection)
 
     def update_settlements(self, surface):
         if self.settlements:
