@@ -1,6 +1,7 @@
 import pygame
 
 from settlements import Settlements
+from enemy import Enemies
 
 # pygame setup
 pygame.init()
@@ -11,6 +12,11 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 clock = pygame.time.Clock()
 running = True
 dt = 0
+
+
+# first parameter is frames the attack wave lasts
+# second parameter is frames in between waves
+enemies = Enemies(500, 100, WIDTH, HEIGHT - 150)
 
 settlements = Settlements()
 
@@ -62,6 +68,7 @@ while running:
         for settlement in settlements.settlements:
             if pygame.Vector2(settlement.rect.center).distance_to(mouse_pos) <= settlements.which_is_bought().range and settlement.bought == False:
                 pygame.draw.line(screen, 'black', mouse_pos, settlement.rect.center)
+    enemies.update_enemies(screen, dt)
     settlements.update_connections(screen)
     settlements.update_settlements(screen)
     
