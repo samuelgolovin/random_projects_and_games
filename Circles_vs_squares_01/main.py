@@ -38,19 +38,17 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+
         if event.type == pygame.MOUSEBUTTONUP and settlements.over_button(mouse_pos):
             settlements.create_settlement(mouse_pos[0], mouse_pos[1], settlements.over_button(mouse_pos).type)
+
         if event.type == pygame.MOUSEBUTTONDOWN and settlements.check_if_bought():
+
             for settlement in settlements.settlements:
-                if settlement.bought == False and pygame.Vector2(settlement.rect.center).distance_to(mouse_pos) <= 200:
+                if settlement.bought == False and pygame.Vector2(settlement.rect.center).distance_to(mouse_pos) <= settlements.which_is_bought().range:
                     settlements.create_connection(mouse_pos, settlement.rect.center, 'black')
+
             settlements.set_settlement()
-
-    if settlements.check_if_bought():
-        for settlement in settlements.settlements:
-            if pygame.Vector2(settlement.rect.center).distance_to(mouse_pos) <= 200 and settlement.bought == False:
-                pygame.draw.line(screen, 'black', mouse_pos, settlement.rect.center)
-
 
 
     # fill the screen with a color to wipe away anything from last frame
@@ -62,7 +60,7 @@ while running:
     settlements.update_buttons(screen)
     if settlements.check_if_bought():
         for settlement in settlements.settlements:
-            if pygame.Vector2(settlement.rect.center).distance_to(mouse_pos) <= 200 and settlement.bought == False:
+            if pygame.Vector2(settlement.rect.center).distance_to(mouse_pos) <= settlements.which_is_bought().range and settlement.bought == False:
                 pygame.draw.line(screen, 'black', mouse_pos, settlement.rect.center)
     settlements.update_connections(screen)
     settlements.update_settlements(screen)

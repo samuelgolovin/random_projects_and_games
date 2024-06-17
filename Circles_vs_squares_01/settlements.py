@@ -6,8 +6,7 @@ from connection import Connection
 class Settlement:
     def __init__(self, x, y, type):
         self.type = type
-        self.connected = False
-        print(self.type)
+
         if self.type == 'basic_earner':
             self.size = 10
             self.color = 'white'
@@ -20,6 +19,7 @@ class Settlement:
             self.bought = False
 
         self.rect = pygame.Rect(x - self.size / 2, y - self.size / 2, self.size, self.size)
+
 
 
     def draw(self, surface):
@@ -43,6 +43,8 @@ class Settlements:
         self.settlements = []
         self.buttons = []
         self.connections = []
+
+
     
     def over_button(self, mouse_pos):
         for button in self.buttons:
@@ -53,6 +55,11 @@ class Settlements:
         for settlement in self.settlements:
             if settlement.bought == True:
                 return True
+            
+    def which_is_bought(self):
+        for settlement in self.settlements:
+            if settlement.bought == True:
+                return settlement
         
     def set_settlement(self):
         for settlement in self.settlements:
