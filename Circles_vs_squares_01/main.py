@@ -24,6 +24,8 @@ settlements.create_button(625, 500, 75, 75, (200, 200, 200), 'advanced_earner')
 settlements.create_button(725, 500, 75, 75, (200, 200, 200), 'advanced_efficiency')
 settlements.create_button(825, 500, 75, 75, (200, 200, 200), 'city')
 
+settlements.create_settlement(WIDTH / 2, (HEIGHT - 150) / 2, 'city')
+
 
 while running:
     mouse_pos = pygame.mouse.get_pos()
@@ -33,7 +35,8 @@ while running:
         if event.type == pygame.QUIT:
             running = False
         if event.type == pygame.MOUSEBUTTONUP and settlements.over_button(mouse_pos):
-            settlements.create_settlement(mouse_pos[0], mouse_pos[1], 10, 'white')
+            settlements.create_settlement(mouse_pos[0], mouse_pos[1], settlements.over_button(mouse_pos).type)
+            settlements.create_connection(mouse_pos, (WIDTH / 2, HEIGHT / 2), 'black')
         if event.type == pygame.MOUSEBUTTONDOWN and settlements.check_if_bought():
             settlements.set_settlement()
 
@@ -44,9 +47,10 @@ while running:
     pygame.draw.rect(screen, (60, 60, 40), (0, 475, 925, 125))
     pygame.draw.rect(screen, (0, 0, 0), (0, 475, 925, 125), 5)
 
-
-    settlements.update_settlements(screen)
     settlements.update_buttons(screen)
+    settlements.update_connections(screen)
+    settlements.update_settlements(screen)
+    
 
     for settlement in settlements.settlements:
         if settlement.bought == True:
