@@ -51,10 +51,16 @@ while running:
         if event.type == pygame.MOUSEBUTTONDOWN and settlements.check_if_bought():
 
             for settlement in settlements.settlements:
-                if settlement.bought == False and pygame.Vector2(settlement.rect.center).distance_to(mouse_pos) <= settlements.which_is_bought().range:
-                    settlements.create_connection(mouse_pos, settlement.rect.center, 'black')
-
-            settlements.set_settlement()
+                if pygame.Vector2(settlement.rect.center).distance_to(mouse_pos) <= settlements.which_is_bought().range and not settlement.bought and not settlements.is_over_other_settlement(settlements.which_is_bought().rect):
+                        if settlements.which_is_bought().type == 'basic_relay' and settlement.relay:
+                            settlements.create_connection(mouse_pos, settlement.rect.center, 'black')    
+                        elif not settlements.which_is_bought().type == 'basic_relay':
+                            settlements.create_connection(mouse_pos, settlement.rect.center, 'black')    
+                
+            if not settlements.is_over_other_settlement(settlements.which_is_bought().rect):
+                settlements.set_settlement()    
+            else:
+                print("can't place that here")
 
 
     # fill the screen with a color to wipe away anything from last frame
@@ -64,10 +70,20 @@ while running:
     pygame.draw.rect(screen, (0, 0, 0), (0, 475, 925, 125), 5)
 
     settlements.update_buttons(screen)
+
     if settlements.check_if_bought():
         for settlement in settlements.settlements:
-            if pygame.Vector2(settlement.rect.center).distance_to(mouse_pos) <= settlements.which_is_bought().range and settlement.bought == False:
-                pygame.draw.line(screen, 'black', mouse_pos, settlement.rect.center)
+            if pygame.Vector2(settlement.rect.center).distance_to(mouse_pos) <= settlements.which_is_bought().range and not settlement.bought:
+                    if settlements.which_is_bought().type == 'basic_relay' and settlement.relay:
+                        pygame.draw.line(screen, 'black', mouse_pos, settlement.rect.center)
+                    elif not settlements.which_is_bought().type == 'basic_relay':
+                        pygame.draw.line(screen, 'black', mouse_pos, settlement.rect.center)
+    if settlements.which_is_bought():
+        if settlements.is_over_other_settlement(settlements.which_is_bought().rect):
+            settlements.which_is_bought().color = settlements.which_is_bought().color_when_cannot_place
+        else:
+            settlements.which_is_bought().color = settlements.which_is_bought().normal_color
+                    
     enemies.update_enemies(screen, dt)
     settlements.update_connections(screen)
     settlements.update_settlements(screen)
