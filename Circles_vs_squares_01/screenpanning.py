@@ -1,5 +1,4 @@
 import pygame
-import sys
 
 class PanScreen:
     def __init__(self, width, height):
@@ -13,7 +12,7 @@ class PanScreen:
         self.mouse_y = 0
 
     def handle_event(self, event):
-        if event.type == pygame.MOUSEBUTTONDOWN:
+        if event.type == pygame.MOUSEBUTTONDOWN and pygame.mouse.get_pos()[1] < 475:
             if event.button == 1:
                 self.dragging = True
                 self.mouse_x, self.mouse_y = pygame.mouse.get_pos()
@@ -39,24 +38,3 @@ class Rectangle:
 
     def draw(self, surface, offset_x, offset_y):
         pygame.draw.rect(surface, (255, 0, 0), self.rect.move(offset_x, offset_y))
-
-def main():
-    pygame.init()
-    screen = PanScreen(400, 800)
-    rectangle = Rectangle(50, 50, 100, 100)
-
-    objects = [rectangle]
-
-    while True:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
-            screen.handle_event(event)
-
-        screen.screen.fill((255, 255, 255))
-        screen.draw_objects(objects)
-        pygame.display.flip()
-
-if __name__ == "__main__":
-    main()

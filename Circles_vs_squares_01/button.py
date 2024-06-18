@@ -7,7 +7,8 @@ class Button:
         self.type = type
     
     def draw(self, surface):
-        pygame.draw.rect(surface, self.color, self.rect)
+        pygame.draw.rect(surface, self.color, self.rect, border_radius=10)
+        pygame.draw.rect(surface, "black", self.rect, width=4, border_radius=10)
         if self.type == 'basic_earner':
             pygame.draw.circle(surface, 'white', self.rect.center, self.rect.width / 7)
             pygame.draw.circle(surface, 'black', self.rect.center, self.rect.width / 7, self.rect.width // 18)
