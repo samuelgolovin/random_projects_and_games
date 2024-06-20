@@ -31,10 +31,3 @@ class PanScreen:
     def draw_objects(self, objects):
         for obj in objects:
             obj.draw(self.screen, self.offset_x, self.offset_y)
-
-class Rectangle:
-    def __init__(self, x, y, width, height):
-        self.rect = pygame.Rect(x, y, width, height)
-
-    def draw(self, surface, offset_x, offset_y):
-        pygame.draw.rect(surface, (255, 0, 0), self.rect.move(offset_x, offset_y))

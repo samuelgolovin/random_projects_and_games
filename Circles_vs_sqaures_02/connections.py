@@ -14,3 +14,13 @@ class Connection:
 
     def update(self, surface):
         self.draw(surface)
+
+class Connections:
+    def __init__(self):
+        self.connections = []
+
+    def create_connection(self, start_pos, end_pos, color):
+        self.connections.append(Connection(start_pos, end_pos, color))
+
+    def remove_connection(self, connection):
+        print("Will be added soon")
