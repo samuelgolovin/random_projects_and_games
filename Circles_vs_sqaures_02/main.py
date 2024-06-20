@@ -1,7 +1,7 @@
 import pygame
 import sys
 
-from settlements02 import Settlements
+from settlements import Settlements
 from screenpanning import PanScreen
 
 
