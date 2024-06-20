@@ -36,12 +36,4 @@ class Buttons:
         for button in self.buttons:
             if button.rect.collidepoint(mouse_pos):
                 return button
-
-    def handle_event(self, event):
-        if event.type == pygame.MOUSEBUTTONDOWN and pygame.mouse.get_pos()[1] > 475:
-            if event.button == 1:
-                print("working on this soon")
-            
-        elif event.type == pygame.MOUSEBUTTONUP:
-            if event.button == 1:
-                print("working on this soon")
+        return False
