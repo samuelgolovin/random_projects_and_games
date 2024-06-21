@@ -18,11 +18,17 @@ class PanScreen:
             if event.button == 1:  # Left mouse button.
                 self.dragging = True
                 self.mouse_x, self.mouse_y = pygame.mouse.get_pos()
+
+            if event.button == 3:
                 self.objects.append(Rectangle(self.mouse_x - self.offset_x, self.mouse_y - self.offset_y, 100, 100))
+                
 
         elif event.type == pygame.MOUSEBUTTONUP:
             if event.button == 1:  # Left mouse button.
                 self.dragging = False
+
+            if event.button == 3:
+                self.objects.append(Rectangle(self.mouse_x - self.offset_x, self.mouse_y - self.offset_y, 100, 100))
 
         elif event.type == pygame.MOUSEMOTION:
             if self.dragging:

@@ -22,6 +22,8 @@ def main():
 
     settlements.create_settlement(WIDTH / 2, (HEIGHT - 150) / 2, 'city')
 
+    settlements.create_settlement(WIDTH / 3, (HEIGHT - 150) / 3, 'basic_earner')
+
     while True:
         mouse_pos = pygame.mouse.get_pos()
         for event in pygame.event.get():
@@ -29,12 +31,14 @@ def main():
                 pygame.quit()
                 sys.exit()
 
-            if event.type == pygame.MOUSEBUTTONUP and buttons.over_button(mouse_pos) and not settlements.temp_settlement_exists():
+            if event.type == pygame.MOUSEBUTTONUP and buttons.over_button(mouse_pos) and not settlements.does_temp_settlement_exists():
                 if event.button == 1:
                     settlements.create_temp_settlement(mouse_pos[0], mouse_pos[1], buttons.over_button(mouse_pos).type)
 
-                    print("working on this soon")
-
+            if event.type == pygame.MOUSEBUTTONDOWN and screen.is_mouse_on_game(mouse_pos) and settlements.does_temp_settlement_exists():
+                temp = settlements.get_temp_settlement()
+                settlements.create_settlement(mouse_pos[0] - screen.offset_x, mouse_pos[1] - screen.offset_y, temp.type)
+                settlements.remove_temp_settlement()
 
 
             screen.handle_event(event)  # handle the screen panning
@@ -43,21 +47,19 @@ def main():
 
         # in-game (beneath the shop)
         
+        screen.draw_objects(settlements.settlements)
 
-
-        # shop
+        # # shop
         pygame.draw.rect(screen.screen, (60, 60, 40), (0, 475, 925, 125))
         pygame.draw.rect(screen.screen, (0, 0, 0), (0, 475, 925, 125), 5)
 
         buttons.draw_buttons(screen.screen)
 
+
         # in-game (above the shop)
 
-        screen.draw_objects(settlements.settlements)
-
-        if settlements.temp_settlement_exists:
-            settlements.update_temp_settlemnt(mouse_pos)
-            settlements.draw_temp_settlement(screen.screen)
+        if settlements.does_temp_settlement_exists():
+            settlements.draw_temp_settlement(screen.screen, mouse_pos)
 
         pygame.display.flip()
         dt = clock.tick(60) / 1000

@@ -83,12 +83,9 @@ class Temp_Settlement:
 
         self.rect = pygame.Rect(x - self.size / 2, y - self.size / 2, self.size, self.size)
 
-    def draw(self, surface):
-        pygame.draw.circle(surface, self.color, self.rect.center, self.rect.width / 2)
-        pygame.draw.circle(surface, 'black', self.rect.center, self.rect.width / 2, 2)
-
-    def update(self, mouse_pos):
-        self.rect.update((mouse_pos), (self.rect.width / 2, self.rect.height / 2))
+    def draw(self, surface, mouse_pos):
+        pygame.draw.circle(surface, self.color, mouse_pos, self.rect.width / 2)
+        pygame.draw.circle(surface, 'black', mouse_pos, self.rect.width / 2, 2)
 
 
 class Settlements:
@@ -115,13 +112,13 @@ class Settlements:
         for temp_settlement in self.temp_settlement:
             self.temp_settlement.remove(temp_settlement)
 
-    def temp_settlement_exists(self):
+    def does_temp_settlement_exists(self):
         return True if len(self.temp_settlement) > 0 else False
-
-    def draw_temp_settlement(self, surface):
+    
+    def get_temp_settlement(self):
         for temp_settlement in self.temp_settlement:
-            temp_settlement.draw(surface)
+            return temp_settlement
 
-    def update_temp_settlemnt(self, mouse_pos):
+    def draw_temp_settlement(self, surface, mouse_pos):
         for temp_settlement in self.temp_settlement:
-            temp_settlement.update(mouse_pos)
+            temp_settlement.draw(surface, mouse_pos)

@@ -28,6 +28,16 @@ class PanScreen:
                 self.offset_y += mouse_y - self.mouse_y
                 self.mouse_x, self.mouse_y = mouse_x, mouse_y
 
+
     def draw_objects(self, objects):
         for obj in objects:
             obj.draw(self.screen, self.offset_x, self.offset_y)
+    
+
+    # mouse_position functions
+
+    def is_mouse_on_game(self, mouse_pos):
+        return True if mouse_pos[1] < 475 else False
+
+
+    
