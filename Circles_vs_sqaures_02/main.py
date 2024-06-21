@@ -36,8 +36,17 @@ def main():
                     settlements.create_temp_settlement(mouse_pos[0], mouse_pos[1], buttons.over_button(mouse_pos).type)
 
             if event.type == pygame.MOUSEBUTTONDOWN and screen.is_mouse_on_game(mouse_pos) and settlements.does_temp_settlement_exists():
+                
                 temp = settlements.get_temp_settlement()
-                settlements.create_settlement(mouse_pos[0] - screen.offset_x, mouse_pos[1] - screen.offset_y, temp.type)
+
+                for settlement in settlements.settlements:
+                    if pygame.Vector2(settlement.rect.center).distance_to(mouse_pos) <= temp.range and not settlements.is_over_other_settlement(temp.rect):
+                        if temp.type == 'basic_relay' and settlement.relay:
+                            connections.create_connection(mouse_pos, settlement.rect.center, 'black')    
+                        elif not temp.type == 'basic_relay':
+                            connections.create_connection(mouse_pos, settlement.rect.center, 'black')
+                
+                settlements.create_settlement(mouse_pos[0] - screen.offset_x, mouse_pos[1] - screen.offset_y, temp.type) 
                 settlements.remove_temp_settlement()
 
 
@@ -46,6 +55,8 @@ def main():
         screen.screen.fill((60, 60, 90))
 
         # in-game (beneath the shop)
+
+        screen.draw_objects(connections.connections)
         
         screen.draw_objects(settlements.settlements)
 

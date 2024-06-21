@@ -96,10 +96,8 @@ class Settlements:
     def is_over_other_settlement(self, bought_settlement_rect):
         temp = False
         for settlement in self.settlements:
-            if not settlement.bought:
-                if bought_settlement_rect.colliderect(settlement.rect):
-                    temp = True
-            
+            if bought_settlement_rect.colliderect(settlement.rect):
+                temp = True   
         return temp
 
     def create_settlement(self, x, y, type):
