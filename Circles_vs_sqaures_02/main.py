@@ -42,9 +42,9 @@ def main():
                 for settlement in settlements.settlements:
                     if pygame.Vector2(settlement.rect.center).distance_to(mouse_pos) <= temp.range and not settlements.is_over_other_settlement(temp.rect):
                         if temp.type == 'basic_relay' and settlement.relay:
-                            connections.create_connection(mouse_pos, settlement.rect.center, 'black')    
+                            connections.create_connection(mouse_pos, (settlement.rect.centerx - screen.offset_x, settlement.rect.centery - screen.offset_y), 'black')    
                         elif not temp.type == 'basic_relay':
-                            connections.create_connection(mouse_pos, settlement.rect.center, 'black')
+                            connections.create_connection(mouse_pos, (settlement.rect.centerx - screen.offset_x, settlement.rect.centery - screen.offset_y), 'black')
                 
                 settlements.create_settlement(mouse_pos[0] - screen.offset_x, mouse_pos[1] - screen.offset_y, temp.type) 
                 settlements.remove_temp_settlement()
