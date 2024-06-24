@@ -19,6 +19,7 @@ def main():
     connections = Connections()
 
     buttons.create_button(25, 500, 75, 75, (200, 200, 200), 'basic_earner')
+    buttons.create_button(125, 500, 75, 75, (200, 200, 200), 'basic_relay')
 
     settlements.create_settlement(WIDTH / 2, (HEIGHT - 150) / 2, 'city')
 
@@ -46,8 +47,11 @@ def main():
                         elif not temp.type == 'basic_relay':
                             connections.create_connection((mouse_pos[0] - screen.offset_x, mouse_pos[1] - screen.offset_y), (settlement.location[0] - screen.offset_x, settlement.location[1] - screen.offset_y), 'black')
                 
-                settlements.create_settlement(mouse_pos[0] - screen.offset_x, mouse_pos[1] - screen.offset_y, temp.type) 
-                settlements.remove_temp_settlement()
+                if not settlements.is_over_other_settlement(temp.rect):
+                    settlements.create_settlement(mouse_pos[0] - screen.offset_x, mouse_pos[1] - screen.offset_y, temp.type) 
+                    settlements.remove_temp_settlement()
+                else:
+                    print("can't place that here")
 
 
             screen.handle_event(event)  # handle the screen panning
@@ -81,6 +85,13 @@ def main():
 
         if settlements.does_temp_settlement_exists():
             settlements.draw_temp_settlement(screen.screen, mouse_pos)
+
+        if settlements.does_temp_settlement_exists():
+            temp = settlements.get_temp_settlement()
+            if settlements.is_over_other_settlement(temp.rect):
+                temp.color = temp.color_when_cannot_place
+            else:
+                temp.color = temp.normal_color
 
         pygame.display.flip()
         dt = clock.tick(60) / 1000
