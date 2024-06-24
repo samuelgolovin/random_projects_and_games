@@ -17,6 +17,10 @@ class Button:
             pygame.draw.circle(surface, 'gray', self.rect.center, self.rect.width / 4)
             pygame.draw.circle(surface, 'black', self.rect.center, self.rect.width / 4, self.rect.width // 20)
 
+        elif self.type == 'basic_defender':
+            pygame.draw.circle(surface, 'lightblue', self.rect.center, self.rect.width / 5)
+            pygame.draw.circle(surface, 'black', self.rect.center, self.rect.width / 5, self.rect.width // 19)
+
         elif self.type == 'city':
             pygame.draw.circle(surface, 'white', self.rect.center, self.rect.width / 3)
             pygame.draw.circle(surface, 'black', self.rect.center, self.rect.width / 3, self.rect.width // 10)

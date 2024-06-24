@@ -2,32 +2,23 @@ import pygame
 import random
 
 class Enemy:
-    def __init__(self, x, y, width, height, velocity, health, speed):
+    def __init__(self, x, y, width, height, velocity, health, speed, color):
         self.rect = pygame.Rect(x, y, width, height)
         self.velocity = velocity
         self.speed = speed
+        self.health = health
+        self.color = color
     
-    def draw(self, surface):
-        pygame.draw.rect(surface, self.color, self.rect)
+        self.location = self.rect.center
+
+    def draw(self, surface, offset_x, offset_y):
+        self.location = (self.rect.centerx + offset_x, self.rect.centery + offset_y)
+        pygame.draw.rect(surface, self.color, (self.location, self.rect.size))
 
     def move_enemy(self, dt):
-        self.rect.update(self.rect.x, self.rect.y, self.rect.width, self.rect.height)
-
         # Update the self's position
         self.rect.center += self.velocity * dt
 
-    def set_target(self, target):
-        # Calculate the direction vector to the target
-        target = pygame.Vector2(target)
-        direction = target - pygame.Vector2(x, y)
-
-        # Normalize the direction vector and multiply by the enemy's speed to get the velocity
-        self.velocity = direction.normalize() * self.speed
-    
-
-    def update(self, surface, dt):
-        self.move_enemy(dt)
-        self.draw(surface)
 
 class Enemies:
     def __init__(self, time_of_attack, time_between_attacks, screen_width, screen_height):
@@ -55,13 +46,12 @@ class Enemies:
 
         # Calculate the direction vector to the target
         target = pygame.Vector2(target)
-        direction = target - pygame.Vector2(x, y)
+        direction = target - pygame.Vector2(x + width / 2, y + height / 2)
 
         # Normalize the direction vector and multiply by the enemy's speed to get the velocity
         velocity = direction.normalize() * speed
-
-        enemy = Enemy(x, y, width, height, velocity, health, speed)
-        self.enemies.append(enemy)
+        
+        self.enemies.append(Enemy(x, y, width, height, velocity, health, speed, 'black'))
 
     def damage_enemy(self, enemy, damage):
         enemy.health -= damage
@@ -71,9 +61,9 @@ class Enemies:
     def kill_enemy(self, enemy):
         self.enemies.remove(enemy)
 
-    def update_enemies(self, surface, dt):
+    def update_enemies(self, dt):
         for enemy in self.enemies:
-            enemy.update(surface, dt)
+            enemy.move_enemy(dt)
             
             if enemy.rect.centerx > self.screen_width + 20 or enemy.rect.centerx < -20 or enemy.rect.centery > self.screen_height + 20 or enemy.rect.centery < -20:
                 self.enemies.remove(enemy)

@@ -1,5 +1,17 @@
 import pygame
 
+class Bullet:
+    def __init__(self, x, y, velocity, size, color=(255, 255, 255)):
+        self.rect = pygame.Rect(x, y, size / 2, size / 2)
+        self.velocity = velocity
+        self.color = color
+
+        self.location = self.rect.center
+
+    def draw(self, surface, offset_x, offset_y):
+        self.location = (self.rect.centerx + offset_x, self.rect.centery + offset_y)
+        pygame.draw.circle(surface, self.color, self.location, self.rect.width / 2)
+
 class Settlement:
     def __init__(self, x, y, type):
         self.type = type
@@ -9,17 +21,25 @@ class Settlement:
             self.color = 'white'
             self.normal_color = 'white'
             self.color_when_cannot_place = 'red'
-            self.range = 50
+            self.range = 60
             self.relay = False
             self.over_other_settlemnts = False
 
         elif self.type == 'basic_defender':
-            self.size = 15
-            self.color = 'darkred'
-            self.normal_color = 'darkred'
+            self.size = 16
+            self.color = 'lightblue'
+            self.normal_color = 'lightblue'
             self.color_when_cannot_place = 'red'
-            self.range = 50
+            self.range = 40
             self.relay = False
+            self.projectile_size = 10
+            self.projectile_range = 100
+            self.projectile_range_max = 1000
+            self.cooldown_limit = 80
+            self.cooldown = 0
+            self.projectile_speed = 1000
+            self.projectile_damage = 5
+            self.bullets = []
 
         elif self.type == 'basic_relay':
             self.size = 20
@@ -44,6 +64,47 @@ class Settlement:
         self.location = (self.rect.centerx + offset_x, self.rect.centery + offset_y)
         pygame.draw.circle(surface, self.color, self.location, self.rect.width / 2)
         pygame.draw.circle(surface, 'black', self.location, self.rect.width / 2, 2)
+    
+    def fire_bullet(self, enemy_pos):
+        self.cooldown = 0
+        target = pygame.Vector2(enemy_pos)
+        direction = target - pygame.Vector2(self.rect.centerx, self.rect.centery)
+
+        # Normalize the direction vector and multiply by the enemy's speed to get the velocity
+        velocity = direction.normalize() * self.projectile_speed
+
+        bullet = Bullet(self.rect.centerx, self.rect.centery, velocity, self.projectile_size)
+        self.bullets.append(bullet)
+
+    def closest_enemy(self, enemies):
+        if len(enemies) > 1:
+            
+            temp_array = []
+            for enemy in enemies:
+                temp_array.append(pygame.Vector2(enemy.rect.center))
+
+            min_val = temp_array[0], 0
+
+            for i in range(1, len(temp_array) - 1):
+                if min_val[0].distance_to(pygame.Vector2(self.rect.center)) > temp_array[i].distance_to(pygame.Vector2(self.rect.center)):
+                    min_val = temp_array[i], i
+
+            return temp_array[min_val[1]]
+        else:
+            for enemy in enemies:
+                return enemy.rect.center
+
+    def update_bullets(self, dt):
+        for bullet in self.bullets:
+
+            # Update the bullets's position
+            bullet.rect.center += bullet.velocity * dt
+
+            # If the bullet has left the screen, remove it
+            if pygame.Vector2(self.rect.center).distance_to(pygame.Vector2(bullet.rect.center)) > self.projectile_range_max:
+                self.bullets.remove(bullet)
+
+
 
 class Temp_Settlement:
     def __init__(self, x, y, type):
@@ -54,16 +115,16 @@ class Temp_Settlement:
             self.color = 'white'
             self.normal_color = 'white'
             self.color_when_cannot_place = 'red'
-            self.range = 50
+            self.range = 60
             self.relay = False
             self.over_other_settlemnts = False
 
         elif self.type == 'basic_defender':
-            self.size = 15
-            self.color = 'darkred'
-            self.normal_color = 'darkred'
+            self.size = 16
+            self.color = 'lightblue'
+            self.normal_color = 'lightblue'
             self.color_when_cannot_place = 'red'
-            self.range = 50
+            self.range = 40
             self.relay = False
 
         elif self.type == 'basic_relay':
@@ -112,7 +173,7 @@ class Settlements:
 
     def does_temp_settlement_exists(self):
         return True if len(self.temp_settlement) > 0 else False
-    
+
     def get_temp_settlement(self):
         for temp_settlement in self.temp_settlement:
             return temp_settlement
@@ -120,3 +181,8 @@ class Settlements:
     def draw_temp_settlement(self, surface, mouse_pos):
         for temp_settlement in self.temp_settlement:
             temp_settlement.draw(surface, mouse_pos)
+
+    def get_city_settlement(self):
+        for settlement in self.settlements:
+            if settlement.type == 'city':
+                return settlement
