@@ -41,13 +41,13 @@ def main():
                 temp = settlements.get_temp_settlement()
 
                 for settlement in settlements.settlements:
-                    if pygame.Vector2(settlement.location).distance_to(mouse_pos) <= temp.range and not settlements.is_over_other_settlement(temp.rect):
+                    if pygame.Vector2(settlement.location).distance_to(mouse_pos) <= temp.range and not settlements.is_too_close_to_other_settlement(temp.rect):
                         if temp.type == 'basic_relay' and settlement.relay:
                             connections.create_connection((mouse_pos[0] - screen.offset_x, mouse_pos[1] - screen.offset_y), (settlement.location[0] - screen.offset_x, settlement.location[1] - screen.offset_y), 'black')    
                         elif not temp.type == 'basic_relay':
                             connections.create_connection((mouse_pos[0] - screen.offset_x, mouse_pos[1] - screen.offset_y), (settlement.location[0] - screen.offset_x, settlement.location[1] - screen.offset_y), 'black')
                 
-                if not settlements.is_over_other_settlement(temp.rect):
+                if not settlements.is_too_close_to_other_settlement(temp.rect):
                     settlements.create_settlement(mouse_pos[0] - screen.offset_x, mouse_pos[1] - screen.offset_y, temp.type) 
                     settlements.remove_temp_settlement()
                 else:
@@ -65,7 +65,7 @@ def main():
         if settlements.get_temp_settlement():
             for settlement in settlements.settlements:
                 temp = settlements.get_temp_settlement()
-                if pygame.Vector2(settlement.location).distance_to(mouse_pos) <= temp.range and not settlements.is_over_other_settlement(temp.rect):
+                if pygame.Vector2(settlement.location).distance_to(mouse_pos) <= temp.range and not settlements.is_too_close_to_other_settlement(temp.rect):
                     if temp.type == 'basic_relay' and settlement.relay:
                         pygame.draw.line(screen.screen, 'black', ((mouse_pos[0]), mouse_pos[1]), (settlement.location[0], settlement.location[1]))
                     elif not temp.type == 'basic_relay':
@@ -84,14 +84,15 @@ def main():
         # in-game (above the shop)
 
         if settlements.does_temp_settlement_exists():
-            settlements.draw_temp_settlement(screen.screen, mouse_pos)
-
-        if settlements.does_temp_settlement_exists():
             temp = settlements.get_temp_settlement()
-            if settlements.is_over_other_settlement(temp.rect):
+            if settlements.is_too_close_to_other_settlement(temp.rect):
                 temp.color = temp.color_when_cannot_place
             else:
                 temp.color = temp.normal_color
+
+            settlements.draw_temp_settlement(screen.screen, mouse_pos)
+
+        
 
         pygame.display.flip()
         dt = clock.tick(60) / 1000

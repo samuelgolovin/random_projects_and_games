@@ -84,8 +84,9 @@ class Temp_Settlement:
         self.rect = pygame.Rect(x - self.size / 2, y - self.size / 2, self.size, self.size)
 
     def draw(self, surface, mouse_pos):
-        pygame.draw.circle(surface, self.color, mouse_pos, self.rect.width / 2)
-        pygame.draw.circle(surface, 'black', mouse_pos, self.rect.width / 2, 2)
+        self.rect.update((mouse_pos[0] - self.size / 2, mouse_pos[1] - self.size / 2), (self.size, self.size))
+        pygame.draw.circle(surface, self.color, self.rect.center, self.rect.width / 2)
+        pygame.draw.circle(surface, 'black', self.rect.center, self.rect.width / 2, 2)
 
 
 class Settlements:
@@ -93,12 +94,11 @@ class Settlements:
         self.settlements = []
         self.temp_settlement = []
             
-    def is_over_other_settlement(self, bought_settlement_rect):
-        temp = False
+    def is_too_close_to_other_settlement(self, bought_settlement_rect):
         for settlement in self.settlements:
-            if bought_settlement_rect.colliderect(settlement.rect):
-                temp = True   
-        return temp
+            if pygame.Vector2(bought_settlement_rect.center).distance_to(settlement.location) <= settlement.rect.width / 2 + bought_settlement_rect.width / 2:
+                return True
+        return False
 
     def create_settlement(self, x, y, type):
         self.settlements.append(Settlement(x, y, type))
