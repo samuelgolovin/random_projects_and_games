@@ -2,20 +2,27 @@ import pygame
 import random
 
 class Enemy:
-    def __init__(self, x, y, width, height, velocity, health, speed, color):
+    def __init__(self, x, y, width, height, velocity, health, speed, color, target):
         self.rect = pygame.Rect(x, y, width, height)
         self.velocity = velocity
         self.speed = speed
         self.health = health
         self.color = color
+
+        self.target = target
     
         self.location = self.rect.center
 
     def draw(self, surface, offset_x, offset_y):
         self.location = (self.rect.centerx + offset_x, self.rect.centery + offset_y)
-        pygame.draw.rect(surface, self.color, (self.location, self.rect.size))
+        pygame.draw.rect(surface, self.color, ((self.location[0] - self.rect.width / 2, self.location[1] - self.rect.height / 2), self.rect.size))
 
     def move_enemy(self, dt):
+        direction = self.target - self.rect.center
+
+        # Normalize the direction vector and multiply by the enemy's speed to get the velocity
+        self.velocity = direction.normalize() * self.speed
+
         # Update the self's position
         self.rect.center += self.velocity * dt
 
@@ -51,7 +58,7 @@ class Enemies:
         # Normalize the direction vector and multiply by the enemy's speed to get the velocity
         velocity = direction.normalize() * speed
 
-        self.enemies.append(Enemy(x, y, width, height, velocity, health, speed, 'black'))
+        self.enemies.append(Enemy(x, y, width, height, velocity, health, speed, 'black', target))
 
     def damage_enemy(self, enemy, damage):
         enemy.health -= damage
@@ -61,9 +68,17 @@ class Enemies:
     def kill_enemy(self, enemy):
         self.enemies.remove(enemy)
 
+    def check_if_target_hit(self, enemy):
+        if enemy.rect.collidepoint(enemy.target):
+            self.kill_enemy(enemy)
+
     def update_enemies(self, dt):
         for enemy in self.enemies:
+            if enemy.rect.centerx > self.screen_width + 20 or enemy.rect.centerx < -20 or enemy.rect.centery > self.screen_height + 20 or enemy.rect.centery < -20:
+                self.kill_enemy(enemy)
+
+            self.check_if_target_hit(enemy)
+
             enemy.move_enemy(dt)
             
-            if enemy.rect.centerx > self.screen_width + 20 or enemy.rect.centerx < -20 or enemy.rect.centery > self.screen_height + 20 or enemy.rect.centery < -20:
-                self.enemies.remove(enemy)
+            

@@ -50,17 +50,22 @@ def main():
                         elif not temp.type == 'basic_relay':
                             connections.create_connection((mouse_pos[0] - screen.offset_x, mouse_pos[1] - screen.offset_y), (settlement.location[0] - screen.offset_x, settlement.location[1] - screen.offset_y), 'black')
                 
-                if not settlements.is_too_close_to_other_settlement(temp.rect):
-                    settlements.create_settlement(mouse_pos[0] - screen.offset_x, mouse_pos[1] - screen.offset_y, temp.type) 
-                    settlements.remove_temp_settlement()
-                else:
-                    print("can't place that here")
+                        settlements.create_settlement(mouse_pos[0] - screen.offset_x, mouse_pos[1] - screen.offset_y, temp.type) 
+                        settlements.remove_temp_settlement()
+
+                # if not settlements.is_too_close_to_other_settlement(temp.rect):
+                #     settlements.create_settlement(mouse_pos[0] - screen.offset_x, mouse_pos[1] - screen.offset_y, temp.type) 
+                #     settlements.remove_temp_settlement()
+                # else:
+                #     print("can't place that here")
 
 
             screen.handle_event(event)  # handle the screen panning
 
         # Spawn enemies
-        if random.random() < 0.01:  # 1% chance per frame
+        if random.random() < 0.02:  # 1% chance per frame
+        # if random.random() < 0.10:  # 10% chance per frame
+        # if random.random() < 0.50:  # 50% chance per frame
             enemies.spawn_enemy(settlements.get_city_settlement().rect.center, 20, 20, 100, 100)
 
         # Update enemies
@@ -88,7 +93,6 @@ def main():
         screen.draw_objects(settlements.settlements)
 
         for settlement in settlements.settlements:
-            pygame.draw.circle(screen.screen, 'black', settlement.rect.center, 1)
             if settlement.type == 'basic_defender':
                 if settlement.cooldown > settlement.cooldown_limit and enemies.enemies:
                     settlement.fire_bullet(settlement.closest_enemy(enemies.enemies))
