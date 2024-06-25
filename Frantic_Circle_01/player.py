@@ -52,7 +52,7 @@ class Player:
 
             min_val = temp_array[0], 0
 
-            for i in range(1, len(temp_array) - 1):
+            for i in range(1, len(temp_array)):
                 if min_val[0].distance_to(player_pos) > temp_array[i].distance_to(player_pos):
                     min_val = temp_array[i], i
 

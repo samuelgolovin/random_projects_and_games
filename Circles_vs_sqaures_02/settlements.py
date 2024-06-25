@@ -37,7 +37,7 @@ class Settlement:
             self.projectile_range_max = 1000
             self.cooldown_limit = 80
             self.cooldown = 0
-            self.projectile_speed = 1000
+            self.projectile_speed = 500
             self.projectile_damage = 5
             self.bullets = []
 
@@ -85,7 +85,7 @@ class Settlement:
 
             min_val = temp_array[0], 0
 
-            for i in range(1, len(temp_array) - 1):
+            for i in range(1, len(temp_array)):
                 if min_val[0].distance_to(pygame.Vector2(self.rect.center)) > temp_array[i].distance_to(pygame.Vector2(self.rect.center)):
                     min_val = temp_array[i], i
 

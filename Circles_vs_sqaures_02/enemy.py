@@ -50,7 +50,7 @@ class Enemies:
 
         # Normalize the direction vector and multiply by the enemy's speed to get the velocity
         velocity = direction.normalize() * speed
-        
+
         self.enemies.append(Enemy(x, y, width, height, velocity, health, speed, 'black'))
 
     def damage_enemy(self, enemy, damage):

@@ -62,13 +62,6 @@ def main():
         # Spawn enemies
         if random.random() < 0.01:  # 1% chance per frame
             enemies.spawn_enemy(settlements.get_city_settlement().rect.center, 20, 20, 100, 100)
-        # if random.random() < 0.005:  # 0.5% chance per frame
-        #     enemies.spawn_enemy('big', player.pos)
-        # if boss_clock >= boss_cooldown:
-        #     boss_clock = 0
-        #     enemies.spawn_enemy('boss', player.pos)
-        # else:
-        #     boss_clock += 1
 
         # Update enemies
         enemies.update_enemies(dt)
@@ -95,6 +88,7 @@ def main():
         screen.draw_objects(settlements.settlements)
 
         for settlement in settlements.settlements:
+            pygame.draw.circle(screen.screen, 'black', settlement.rect.center, 1)
             if settlement.type == 'basic_defender':
                 if settlement.cooldown > settlement.cooldown_limit and enemies.enemies:
                     settlement.fire_bullet(settlement.closest_enemy(enemies.enemies))
