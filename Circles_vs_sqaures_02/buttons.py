@@ -1,10 +1,11 @@
 import pygame
 
 class Button:
-    def __init__(self, x, y, width, height, color, type):
+    def __init__(self, x, y, width, height, color, type, cost):
         self.rect = pygame.Rect(x, y, width, height)
         self.color = color
         self.type = type
+        self.cost = cost
     
     def draw(self, surface):
         pygame.draw.rect(surface, self.color, self.rect, border_radius=10)
@@ -33,8 +34,8 @@ class Buttons:
         for button in self.buttons:
             button.draw(surface)
     
-    def create_button(self, x, y, width, height, color, type):
-        self.buttons.append(Button(x, y, width, height, color, type))
+    def create_button(self, x, y, width, height, color, type, cost):
+        self.buttons.append(Button(x, y, width, height, color, type, cost))
 
     def over_button(self, mouse_pos):
         for button in self.buttons:

@@ -1,10 +1,11 @@
 import pygame
 
 class Bullet:
-    def __init__(self, x, y, velocity, size, color=(255, 255, 255)):
+    def __init__(self, x, y, velocity, size, damage, color=(255, 255, 255)):
         self.rect = pygame.Rect(x, y, size / 2, size / 2)
         self.velocity = velocity
         self.color = color
+        self.damage = damage
 
         self.location = self.rect.center
 
@@ -24,6 +25,9 @@ class Settlement:
             self.range = 60
             self.relay = False
             self.over_other_settlemnts = False
+            self.earning_rate = 1
+            self.earning_cooldown = 60
+            self.earning_cooldown_timer = 0
 
         elif self.type == 'basic_defender':
             self.size = 16
@@ -33,8 +37,8 @@ class Settlement:
             self.range = 40
             self.relay = False
             self.projectile_size = 10
-            self.projectile_range = 100
-            self.projectile_range_max = 1000
+            self.projectile_range = 75
+            self.projectile_range_max = 100
             self.cooldown_limit = 80
             self.cooldown = 0
             self.projectile_speed = 500
@@ -64,6 +68,9 @@ class Settlement:
         self.location = (self.rect.centerx + offset_x, self.rect.centery + offset_y)
         pygame.draw.circle(surface, self.color, self.location, self.rect.width / 2)
         pygame.draw.circle(surface, 'black', self.location, self.rect.width / 2, 2)
+        # if self.type == 'basic_defender':
+        #     pygame.draw.circle(surface, "red", self.location, self.projectile_range_max, 1)
+        #     pygame.draw.circle(surface, "green", self.location, self.projectile_range, 1)
     
     def fire_bullet(self, enemy_pos):
         self.cooldown = 0
@@ -73,7 +80,7 @@ class Settlement:
         # Normalize the direction vector and multiply by the enemy's speed to get the velocity
         velocity = direction.normalize() * self.projectile_speed
 
-        bullet = Bullet(self.rect.centerx, self.rect.centery, velocity, self.projectile_size)
+        bullet = Bullet(self.rect.centerx, self.rect.centery, velocity, self.projectile_size, self.projectile_damage)
         self.bullets.append(bullet)
 
     def closest_enemy(self, enemies):
@@ -103,6 +110,12 @@ class Settlement:
             # If the bullet has left the screen, remove it
             if pygame.Vector2(self.rect.center).distance_to(pygame.Vector2(bullet.rect.center)) > self.projectile_range_max:
                 self.bullets.remove(bullet)
+
+    def mouse_over(self, mouse_pos):
+        if self.rect.collidepoint(mouse_pos):
+            return True
+        else:
+            return False
 
 
 
