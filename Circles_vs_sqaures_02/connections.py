@@ -18,7 +18,12 @@ class Connections:
         self.connections.append(Connection(start_pos, end_pos, color))
 
     def remove_connection(self, connection):
-        print("Will be added soon")
+        self.connections.remove(connection)
 
     def create_temp_connection(self, start_pos, end_pos, color):
         self.temp_connections.append(Connection(start_pos, end_pos, color))
+
+    # def check_if_both_settlements_still_exists(self, settlements) -> None:
+    #     for connection in self.connections:
+    #         if not connection.start_settlement in settlements or not connection.end_settlement in settlements:
+    #             self.remove_connection(connection)

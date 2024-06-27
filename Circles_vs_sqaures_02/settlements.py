@@ -1,5 +1,7 @@
 import pygame
 
+from healthbar import HealthBar
+
 class Bullet:
     def __init__(self, x, y, velocity, size, damage, color=(255, 255, 255)):
         self.rect = pygame.Rect(x, y, size / 2, size / 2)
@@ -18,6 +20,7 @@ class Settlement:
         self.type = type
 
         if self.type == 'basic_earner':
+            self.health = 10
             self.size = 10
             self.color = 'white'
             self.normal_color = 'white'
@@ -30,6 +33,7 @@ class Settlement:
             self.earning_cooldown_timer = 0
 
         elif self.type == 'basic_defender':
+            self.health = 20
             self.size = 16
             self.color = 'lightblue'
             self.normal_color = 'lightblue'
@@ -46,6 +50,7 @@ class Settlement:
             self.bullets = []
 
         elif self.type == 'basic_relay':
+            self.health = 15
             self.size = 20
             self.color = 'gray'
             self.normal_color = 'gray'
@@ -54,20 +59,26 @@ class Settlement:
             self.relay = True
 
         elif self.type == 'city':
+            self.health = 100
             self.size = 50
             self.color = 'white'
             self.normal_color = 'white'
             self.color_when_cannot_place = 'red'
             self.relay = True
-            
 
         self.rect = pygame.Rect(x - self.size / 2, y - self.size / 2, self.size, self.size)
         self.location = self.rect.center
+            
+        self.healthbar = HealthBar(self.rect.x, self.rect.y, self.rect.width, self.rect.height, self.health)
+        
 
     def draw(self, surface, offset_x, offset_y):
         self.location = (self.rect.centerx + offset_x, self.rect.centery + offset_y)
         pygame.draw.circle(surface, self.color, self.location, self.rect.width / 2)
         pygame.draw.circle(surface, 'black', self.location, self.rect.width / 2, 2)
+
+        if self.healthbar.current_health < self.healthbar.max_health:
+            self.healthbar.draw(surface, offset_x, offset_y)
         # if self.type == 'basic_defender':
         #     pygame.draw.circle(surface, "red", self.location, self.projectile_range_max, 1)
         #     pygame.draw.circle(surface, "green", self.location, self.projectile_range, 1)
@@ -116,7 +127,6 @@ class Settlement:
             return True
         else:
             return False
-
 
 
 class Temp_Settlement:
@@ -199,3 +209,9 @@ class Settlements:
         for settlement in self.settlements:
             if settlement.type == 'city':
                 return settlement
+            
+    
+    def check_if_alive(self):
+        for settlement in self.settlements:
+            if settlement.healthbar.current_health <= 0:
+                self.settlements.remove(settlement)

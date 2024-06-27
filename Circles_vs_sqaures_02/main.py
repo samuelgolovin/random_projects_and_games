@@ -79,7 +79,7 @@ def main():
                         if pygame.Vector2(settlement.location).distance_to(mouse_pos) <= temp.range and not settlements.is_too_close_to_other_settlement(temp.rect):
                             can_place = True
                             if temp.type == 'basic_relay' and settlement.relay:
-                                connections.create_connection((mouse_pos[0] - screen.offset_x, mouse_pos[1] - screen.offset_y), (settlement.location[0] - screen.offset_x, settlement.location[1] - screen.offset_y), 'black')    
+                                connections.create_connection((mouse_pos[0] - screen.offset_x, mouse_pos[1] - screen.offset_y), (settlement.location[0] - screen.offset_x, settlement.location[1] - screen.offset_y),  'black')    
                             elif not temp.type == 'basic_relay':
                                 connections.create_connection((mouse_pos[0] - screen.offset_x, mouse_pos[1] - screen.offset_y), (settlement.location[0] - screen.offset_x, settlement.location[1] - screen.offset_y), 'black')
                     
@@ -106,6 +106,10 @@ def main():
 
             for enemy in enemies.enemies:
                 if not enemy.rect.collidelist(settlements.settlements) == -1:
+                    settlements.settlements[enemy.rect.collidelist(settlements.settlements)].healthbar.take_damage(enemy.damage)
+                    enemies.enemies.remove(enemy)
+                    settlements.check_if_alive()
+                    # connections.check_if_both_settlements_still_exists(settlements.settlements)
                     print("should remove this enemy and add inflict damage on the settlement")
 
 

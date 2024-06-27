@@ -8,6 +8,7 @@ class Enemy:
         self.speed = speed
         self.health = health
         self.color = color
+        self.damage = 2
 
         self.target = target
     
