@@ -10,9 +10,11 @@ class Graph:
     def __init__(self):
         self.graph = {}
 
-    def add_node(self, node):
+    def add_node(self, position, type):
+        node = Node(position, type)
         if node not in self.graph:
             self.graph[node] = []
+            return node
 
     def add_connection(self, node1, node2):
         if node1 in self.graph and node2 in self.graph:
@@ -39,8 +41,8 @@ class Graph:
             return []
         
     def calculate_distance(self, node1, node2):
-        x1, y1 = self.graph[node1].position
-        x2, y2 = self.graph[node2].position
+        x1, y1 = node1.position
+        x2, y2 = node2.position
         return math.sqrt((x2 - x1)**2 + (y2 - y1)**2)
         
     def pathfinding(self, start, end):
