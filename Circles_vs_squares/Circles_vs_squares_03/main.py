@@ -39,18 +39,22 @@ while True:
             if event.button == 1:  # Left mouse button
                 mouse_pos = event.pos
 
-                if city_graph.on_node(screen.get_mouse_position_on_map()):
-                    print('on node')
-                    # print(city_graph.get_selected_node(screen.get_mouse_position_on_map()))
+                if city_graph.on_node(screen.get_mouse_position_on_map()) and not city_graph.on_shop_rect(mouse_pos):
+                    city_graph.remove_all_shops()
                     city_graph.create_shop(city_graph.get_selected_node(screen.get_mouse_position_on_map()))
-                else:
-                    print('not on node')
+                    shop_exists = True
+                elif not city_graph.on_shop_rect(mouse_pos):
+                    city_graph.remove_all_shops()
+                    shop_exists = False
 
-                # current_node = city_graph.add_node(pygame.Rect(mouse_pos[0] - screen.offset_x, mouse_pos[1] - screen.offset_y, 20, 20), 'A')
-                # if len(city_graph.get_nodes()) > 1:
-                #     for node in city_graph.get_nodes():
-                #         if city_graph.calculate_distance(current_node, node) < 100:
-                #             city_graph.add_connection(current_node, node)
+                if len(city_graph.shop) > 0:
+                    city_graph.create_temp_node(pygame.Rect(mouse_pos[0], mouse_pos[1], 20, 20,), 'A')
+                    # print(city_graph.get_shop_rect(mouse_pos))
+                    # current_node = city_graph.add_node(pygame.Rect(mouse_pos[0] - screen.offset_x, mouse_pos[1] - screen.offset_y, 20, 20), 'A')
+                    # if len(city_graph.get_nodes()) > 1:
+                    #     for node in city_graph.get_nodes():
+                    #         if city_graph.calculate_distance(current_node, node) < 100:
+                    #             city_graph.add_connection(current_node, node)
 
 
         screen.handle_event(event)
@@ -58,6 +62,10 @@ while True:
 
     window.fill((28, 90, 36))
     draw_city(city_graph)
+
+    if len(city_graph.temp_node) > 0:
+        for node in city_graph.temp_node:
+            node.draw(window, pygame.mouse.get_pos())
 
 
 

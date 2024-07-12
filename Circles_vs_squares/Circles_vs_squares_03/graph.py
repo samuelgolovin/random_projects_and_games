@@ -7,17 +7,58 @@ class Shop:
         self.type = node.type
 
         if node.type == 'A':
-            self.rect = pygame.Rect(node.rect.center, (300, 200))
+
+            self.recta = pygame.Rect(0, 0, node.rect.width, node.rect.height)
+            self.rectb = pygame.Rect(0, 0, node.rect.width, node.rect.height)
+            self.rectc = pygame.Rect(0, 0, node.rect.width, node.rect.height)
+
+            self.recta.center = (node.rect.centerx - node.rect.width, node.rect.centery - node.rect.height / 2)
+            self.rectb.center = (node.rect.centerx, node.rect.centery - node.rect.height)
+            self.rectc.center = (node.rect.centerx + node.rect.width, node.rect.centery - node.rect.height / 2)
+
+            self.locationa = self.recta.center
+            self.locationb = self.rectb.center
+            self.locationc = self.rectc.center
+
+            self.rects = [self.recta, self.rectb, self.rectc]
 
         if node.type == 'B':
-            self.rect = pygame.Rect(node.rect.center, (150, 100))
+            self.recta = pygame.Rect(0, 0, node.rect.width, node.rect.height)
+            self.rectb = pygame.Rect(0, 0, node.rect.width, node.rect.height)
 
-        self.location = self.rect.topleft
+            self.recta.center = (node.rect.centerx - node.rect.width, node.rect.centery - node.rect.height / 2)
+            self.rectb.center = (node.rect.centerx, node.rect.centery - node.rect.height)
+
+            self.locationa = self.recta.center
+            self.locationb = self.rectb.center
+
+            self.rects = [self.recta, self.rectb]
 
     def draw(self, surface, offset_x, offset_y):
-        self.location = (self.rect.topleft[0] + offset_x, self.rect.topleft[1] + offset_y)
-        pygame.draw.rect(surface, "gray", ((self.location), (self.rect.size)), border_radius=5)
-        pygame.draw.rect(surface, "black", (self.location, (self.rect.size)), 2, 5)
+        if self.type == 'A':
+            self.locationa = (self.recta.topleft[0] + offset_x, self.recta.topleft[1] + offset_y)
+            self.locationb = (self.rectb.topleft[0] + offset_x, self.rectb.topleft[1] + offset_y)
+            self.locationc = (self.rectc.topleft[0] + offset_x, self.rectc.topleft[1] + offset_y)
+
+            pygame.draw.rect(surface, "gray", ((self.locationa), (self.recta.size)), border_radius=5)
+            pygame.draw.rect(surface, "black", (self.locationa, (self.recta.size)), 2, 5)
+
+            pygame.draw.rect(surface, "gray", ((self.locationb), (self.rectb.size)), border_radius=5)
+            pygame.draw.rect(surface, "black", (self.locationb, (self.rectb.size)), 2, 5)
+
+            pygame.draw.rect(surface, "gray", ((self.locationc), (self.rectc.size)), border_radius=5)
+            pygame.draw.rect(surface, "black", (self.locationc, (self.rectc.size)), 2, 5)
+
+        elif self.type == 'B':
+            self.locationa = (self.recta.topleft[0] + offset_x, self.recta.topleft[1] + offset_y)
+            self.locationb = (self.rectb.topleft[0] + offset_x, self.rectb.topleft[1] + offset_y)
+
+            pygame.draw.rect(surface, "gray", ((self.locationa), (self.recta.size)), border_radius=5)
+            pygame.draw.rect(surface, "black", (self.locationa, (self.recta.size)), 2, 5)
+
+            pygame.draw.rect(surface, "gray", ((self.locationb), (self.rectb.size)), border_radius=5)
+            pygame.draw.rect(surface, "black", (self.locationb, (self.rectb.size)), 2, 5)
+
 
 class Borders:
     def __init__(self, rect):
@@ -49,17 +90,53 @@ class Node:
 
     def draw(self, surface, offset_x, offset_y):
         self.location = (self.rect.centerx + offset_x, self.rect.centery + offset_y)
-        pygame.draw.circle(surface, 'red', self.location, 15)
-        pygame.draw.circle(surface, 'white', self.location, 15, 2)
+        pygame.draw.circle(surface, 'red', self.location, self.rect.width / 2)
+        pygame.draw.circle(surface, 'white', self.location, self.rect.width / 2, 2)
 
         self.rect_location = (self.rect.topleft[0] + offset_x, self.rect.topleft[1] + offset_y)
         pygame.draw.rect(surface, 'black', (self.rect_location, self.rect.size), 1)
 
+class TempNode:
+    def __init__(self, rect, type):
+        self.rect = rect
+        self.type = type
+
+        self.rect_location = self.rect.topleft
+
+        self.location = self.rect.center
+
+    def draw(self, surface, mouse_pos):
+        pygame.draw.circle(surface, 'red', mouse_pos, self.rect.width / 2)
+        pygame.draw.circle(surface, 'white', mouse_pos, self.rect.width / 2, 2)
+
 class Graph:
     def __init__(self):
         self.graph = {}
+        self.temp_node = []
         self.connections_to_draw = []
         self.borders_to_draw = []
+        self.shop = []
+
+    def create_temp_node(self, rect, type):
+        node = TempNode(rect, type)
+        if node not in self.temp_node:
+            self.temp_node[node] = []
+            return node
+
+    def on_shop_rect(self, mouse_pos):
+        if len(self.shop) == 0:
+            return False
+        for rect in self.shop[0].rects:
+            if rect.collidepoint(mouse_pos):
+                return True
+        return False
+
+    def get_shop_rect(self, mouse_pos):
+        for rect in self.shop[0].rects:
+            if rect.collidepoint(mouse_pos):
+                return rect
+
+    def remove_all_shops(self):
         self.shop = []
 
     def create_shop(self, node):
