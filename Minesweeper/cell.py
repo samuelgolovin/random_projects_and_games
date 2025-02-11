@@ -3,7 +3,7 @@ from collections import deque
 
 pygame.font.init()
 
-font = pygame.font.Font(None, 36)
+font = pygame.font.Font(None, 24)
 
 class Cell:
     def __init__(self, i, j, w):
@@ -60,11 +60,28 @@ class Cell:
                 grid[i][j].revealed = True
     
     def draw(self, surface):
-        pygame.draw.rect(surface, (80, 80, 80), (self.x, self.y, self.w, self.w), 2)
+        pygame.draw.rect(surface, (80, 80, 80), (self.x, self.y, self.w, self.w), 1)
         if self.revealed:
             if self.mine:
+                pygame.draw.rect(surface, (220, 50, 50), (self.x + 1, self.y + 1, self.w - 2, self.w - 2))
                 pygame.draw.circle(surface, (120, 120, 120), (self.x + self.w / 2, self.y + self.w / 2), self.w / 4)
             elif self.num_neighbors > -1:
+                if self.num_neighbors == 1:
+                    pygame.draw.rect(surface, (75, 75, 220), (self.x + 1, self.y + 1, self.w - 2, self.w - 2))
+                elif self.num_neighbors == 2:
+                    pygame.draw.rect(surface, (75, 220, 75), (self.x + 1, self.y + 1, self.w - 2, self.w - 2))
+                elif self.num_neighbors == 3:
+                    pygame.draw.rect(surface, (220, 75, 75), (self.x + 1, self.y + 1, self.w - 2, self.w - 2))
+                elif self.num_neighbors == 4:
+                    pygame.draw.rect(surface, (100, 0, 220), (self.x + 1, self.y + 1, self.w - 2, self.w - 2))
+                elif self.num_neighbors == 5:
+                    pygame.draw.rect(surface, (125, 75, 0), (self.x + 1, self.y + 1, self.w - 2, self.w - 2))
+                elif self.num_neighbors == 6:
+                    pygame.draw.rect(surface, (0, 150, 150), (self.x + 1, self.y + 1, self.w - 2, self.w - 2))
+                elif self.num_neighbors == 7:
+                    pygame.draw.rect(surface, (100, 100, 100), (self.x + 1, self.y + 1, self.w - 2, self.w - 2))
+                elif self.num_neighbors == 8:
+                    pygame.draw.rect(surface, (50, 50, 50), (self.x + 1, self.y + 1, self.w - 2, self.w - 2))
                 surface.blit(self.text_surface, self.text_rect)
 
     def find_num_neighbors(self, grid, cols, rows):
