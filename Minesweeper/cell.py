@@ -3,7 +3,7 @@ from collections import deque
 
 pygame.font.init()
 
-font = pygame.font.Font(None, 24)
+font = pygame.font.Font(None, 36)
 
 class Cell:
     def __init__(self, i, j, w):

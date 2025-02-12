@@ -12,7 +12,7 @@ running = True
 pygame.font.init()
 font = pygame.font.Font(None, 100)
 
-w = 40
+w = 35
 cols = WIDTH // w
 rows = HEIGHT // w
 game_over = False
